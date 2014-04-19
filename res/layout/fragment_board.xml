@@ -1,0 +1,35 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="mszhidko.games.movingtile.BoardActivity$PlaceholderFragment" 
+    android:id="@+id/boardFragment">
+
+    <FrameLayout
+        android:id="@+id/frame"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="100dp"
+        >
+    </FrameLayout>
+        
+    
+    <mszhidko.games.movingtile.TileButton
+	android:id="@+id/tileButton1"
+	android:layout_width="100dp"
+	android:layout_height="100dp"
+	android:layout_marginLeft="50dp"
+	android:layout_marginTop="100dp"
+	android:text="1" />
+    
+    <mszhidko.games.movingtile.TileButton
+	android:id="@+id/tileButton2"
+	android:layout_width="100dp"
+	android:layout_height="100dp"
+	android:layout_marginLeft="50dp"
+	android:layout_marginTop="200dp"
+	android:text="2" />
+    
+
+</RelativeLayout>
