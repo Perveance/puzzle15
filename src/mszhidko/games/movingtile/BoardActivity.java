@@ -58,9 +58,10 @@ public class BoardActivity extends ActionBarActivity {
 	 */
 	public static class PlaceholderFragment extends Fragment {
 
+		
 		private FrameLayout mFrame;
 		private RelativeLayout mLayout;
-		private TileButton mButton;
+		private TileButton[] mButtons = new TileButton[2];
 		
 		public PlaceholderFragment() {
 		}
@@ -78,13 +79,6 @@ public class BoardActivity extends ActionBarActivity {
 				MultiTouchListener touchListener = new MultiTouchListener(this);
 			    mFrame.setOnTouchListener(touchListener);
 			    
-			    /*
-			    MarginLayoutParams marginParamsFrame = new MarginLayoutParams(225*3, 100*3);
-			    marginParamsFrame.setMargins(50, 50, 0, 0);
-			    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParamsFrame);
-			    mFrame.setLayoutParams(layoutParams);
-			    */
-
 			}
 			
 			mLayout = (RelativeLayout) rootView.findViewById(R.id.boardFragment);
@@ -92,28 +86,26 @@ public class BoardActivity extends ActionBarActivity {
 				mLayout.setBackgroundColor(0xFF111111);
 			}
 			
-			mButton = (TileButton) rootView.findViewById(R.id.tileButton1);
-			mButton.setFrame(mFrame);
-			/*mButton = new TileButton(getActivity(), mFrame);
-			MarginLayoutParams marginParams = new MarginLayoutParams(255, 100);
-			int left = mFrame.getLeft();
-			int top = mFrame.getTop();
-			marginParams.setMargins(left, top, 0, 0);
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
-            mButton.setLayoutParams(layoutParams);*/
+			int buttonIds[] = {R.id.tileButton1, R.id.tileButton2};
 			
-		    //mButton.setText("TileButton");
-		    //mLayout.addView(mButton);
+			for (int i = 0; i < 2; i++) {
+				mButtons[i] = (TileButton) rootView.findViewById(buttonIds[i]);
+				mButtons[i].setFrame(mFrame);
+			}
 			
 			return rootView;
 		}
 		
-		public Button getButton() {
-			return mButton;
+		public Button[] getButtons() {
+			return mButtons;
 		}
 		
 		public FrameLayout getBoard() {
 			return mFrame;
+		}
+		
+		public enum Direction {
+		    LEFT, RIGHT, UP, DOWN 
 		}
 		
 		public class MultiTouchListener implements OnTouchListener
@@ -124,12 +116,16 @@ public class BoardActivity extends ActionBarActivity {
 			private int mLeft;
 			private int mTop;
 			private boolean mMoving, mMovingHor, mMovingVert;
-			public PlaceholderFragment hostFragment;
+			private PlaceholderFragment hostFragment;
+			private Button[] mTileButtons= new Button[2];
+			private Button mCurButton; 
 			
 			private int mXmin, mXmax, mYmin, mYmax;
 			
 			public MultiTouchListener(PlaceholderFragment boardFragment) {
 			    hostFragment = boardFragment;
+			    mTileButtons = hostFragment.getButtons();
+			    
 			}
 			
 			private boolean isInsideButton(MotionEvent e, Button b) {
@@ -142,7 +138,7 @@ public class BoardActivity extends ActionBarActivity {
 				
 				int b_x_min = location[0];
 				int b_x_max = b_x_min + b.getWidth();
-				int b_y_min = location[1]/*b.getTop()*/;
+				int b_y_min = location[1];
 				int b_y_max = b_y_min + b.getHeight();
 				
 				if ((x < b_x_max) && (x > b_x_min) && (y > b_y_min) && (y < b_y_max)) {
@@ -152,6 +148,21 @@ public class BoardActivity extends ActionBarActivity {
 				return false;
 			}
 			
+			private Button getTouchedButton(MotionEvent e) {
+				for (Button b : mButtons) {
+					if (isInsideButton(e, b)) {
+						return b;
+					}
+				}
+				
+				return null;
+			}
+			
+			private Direction getPotentialDirections() {
+				
+				return Direction.LEFT;
+			
+			}
 			
 			@Override
 			public boolean onTouch(View view, MotionEvent event) {
@@ -164,9 +175,9 @@ public class BoardActivity extends ActionBarActivity {
 			        	//Log.i("Mikhail", "ACTION_DOWN: getX="+event.getX() + "; getY=" + event.getY());
 			        	//Log.i("Mikhail", "ACTION_DOWN: getRawX="+event.getRawX() + "; getRawY=" + event.getRawY());
 			        	
-			        	Button b = hostFragment.getButton();
+			        	mCurButton = getTouchedButton(event);
 			        	
-			        	if (isInsideButton(event, b) == true) {
+			        	if(mCurButton != null) { // Button has been touched
 			        		
 			        		//Log.i("Mikhail", "INSIDE");
 			        		//Log.i("Mikhail", "left=" + left + "; right=" + right + "; top=" + top + "bottom=" + bottom + "; h="+height+"; w="+width);
@@ -174,11 +185,15 @@ public class BoardActivity extends ActionBarActivity {
 			        		mPrevX = event.getX();
 				        	mPrevY = event.getY();
 
-				            mLeft = b.getLeft();
-			                mTop = b.getTop();
-			        	} else {
+				            mLeft = mCurButton.getLeft();
+			                mTop = mCurButton.getTop();
+			                
+			                
+			        	} else { // No button has been touched
 			        		mMoving = false;
 			        	}
+			        	
+			        	Direction d =getPotentialDirections();
 			        	
 			        	mMovingHor = false;
 			        	mMovingVert = false;
@@ -193,8 +208,8 @@ public class BoardActivity extends ActionBarActivity {
 			        	//Log.i("Mikhail", "ACTION_MOVE: getRawX="+event.getRawX() + "; getRawY=" + event.getRawY());
 			        	
 			        	if (mMoving == true) {
-			        		int leftMargin = 0; /* Of a button inside a RelativeLayout */
-			        		int topMargin = 0; /* Of a button inside a RelativeLayout */
+			        		int leftMargin = 0; /* Of a touched button inside the RelativeLayout */
+			        		int topMargin = 0; /* Of a touched button inside the RelativeLayout */
 			                
 			        		dX = (event.getX() - mPrevX); // dx of a button
 			                dY = (event.getY() - mPrevY);
@@ -208,9 +223,7 @@ public class BoardActivity extends ActionBarActivity {
 			                	}
 			                }
 			                
-			                Button b = hostFragment.getButton();
-			                
-			                MarginLayoutParams marginParams = new MarginLayoutParams(b.getWidth(), b.getHeight());
+			                MarginLayoutParams marginParams = new MarginLayoutParams(mCurButton.getWidth(), mCurButton.getHeight());
 			                
 			                if (mMovingHor) {
 			                  leftMargin = mLeft + (int) dX; // change only x if we are moving horizontally
@@ -226,8 +239,8 @@ public class BoardActivity extends ActionBarActivity {
 			                // Make sure the button doesn't leave the Frame's borders
 			                leftMargin = leftMargin < left ? left : leftMargin;
 			                topMargin = topMargin < top ? top : topMargin;
-			                int bWidth = hostFragment.getButton().getWidth();
-			                int bHeight = hostFragment.getButton().getHeight();
+			                int bWidth = mCurButton.getWidth();
+			                int bHeight = mCurButton.getHeight();
 			                
 			                if (leftMargin + bWidth > left + view.getWidth()) {
 			                	leftMargin = left + view.getWidth() - bWidth;
@@ -236,7 +249,6 @@ public class BoardActivity extends ActionBarActivity {
 			                if (topMargin + bHeight > top + view.getHeight()) {
 			                	topMargin = top + view.getHeight() - bHeight;
 			                }
-			                
 			                
 			                /*
 			                Log.i("Mikhail", "x=" + boardLocation[0] + "px; y=" + boardLocation[1] + "px; l=" + leftMargin + 
@@ -247,7 +259,7 @@ public class BoardActivity extends ActionBarActivity {
 			                marginParams.setMargins(leftMargin, topMargin, 0, 0);
 			                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
 			                
-			                b.setLayoutParams(layoutParams);
+			                mCurButton.setLayoutParams(layoutParams);
 			                
 			        	}
 			        	
@@ -255,12 +267,18 @@ public class BoardActivity extends ActionBarActivity {
 			        }
 		
 			        case MotionEvent.ACTION_CANCEL:
+
+			        	mMovingHor = false;
+			        	mMovingVert = false;
+			        	mCurButton = null;
+			        	
 			            break;
 		
 			        case MotionEvent.ACTION_UP:
 
 			        	mMovingHor = false;
 			        	mMovingVert = false;
+			        	mCurButton = null;
 			        	
 			            break;
 			    }
@@ -275,3 +293,4 @@ public class BoardActivity extends ActionBarActivity {
 	
 
 }
+
