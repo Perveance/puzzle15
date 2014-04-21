@@ -89,8 +89,11 @@ public class BoardActivity extends ActionBarActivity {
 			int buttonIds[] = {R.id.tileButton1, R.id.tileButton2};
 			
 			for (int i = 0; i < 2; i++) {
-				mButtons[i] = (TileButton) rootView.findViewById(buttonIds[i]);
-				mButtons[i].setFrame(mFrame);
+				for (int j = 0; j < 1; j++) {
+					mButtons[i] = (TileButton) rootView.findViewById(buttonIds[i]);
+					mButtons[i].setFrame(mFrame);
+					mButtons[i].setTag(Integer.toString(i) + Integer.toString(j));
+				}
 			}
 			
 			return rootView;
@@ -160,7 +163,7 @@ public class BoardActivity extends ActionBarActivity {
 			
 			private Direction getPotentialDirections() {
 				
-				return Direction.LEFT;
+				return Direction.RIGHT;
 			
 			}
 			
