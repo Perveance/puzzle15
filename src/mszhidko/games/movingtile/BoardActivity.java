@@ -61,7 +61,7 @@ public class BoardActivity extends ActionBarActivity {
 		
 		private FrameLayout mFrame;
 		private RelativeLayout mLayout;
-		private TileButton[] mButtons = new TileButton[2];
+		private TileButton[] mButtons = new TileButton[4];
 		
 		public PlaceholderFragment() {
 		}
@@ -86,9 +86,9 @@ public class BoardActivity extends ActionBarActivity {
 				mLayout.setBackgroundColor(0xFF111111);
 			}
 			
-			int buttonIds[] = {R.id.tileButton1, R.id.tileButton2};
+			int buttonIds[] = {R.id.tileButton1, R.id.tileButton2, R.id.tileButton3, R.id.tileButton4};
 			
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < 4; i++) {
 				for (int j = 0; j < 1; j++) {
 					mButtons[i] = (TileButton) rootView.findViewById(buttonIds[i]);
 					mButtons[i].setFrame(mFrame);
@@ -118,17 +118,17 @@ public class BoardActivity extends ActionBarActivity {
 			private float mPrevY;
 			private int mLeft;
 			private int mTop;
-			private boolean mMoving, mMovingHor, mMovingVert;
+			private boolean mMoving/*, mMovingHor, mMovingVert*/;
 			private PlaceholderFragment hostFragment;
-			private Button[] mTileButtons= new Button[2];
+			private Button[] mTileButtons= new Button[4];
 			private Button mCurButton; 
+			Direction mDirection;
 			
-			private int mXmin, mXmax, mYmin, mYmax;
+			//private int mXmin, mXmax, mYmin, mYmax;
 			
 			public MultiTouchListener(PlaceholderFragment boardFragment) {
 			    hostFragment = boardFragment;
 			    mTileButtons = hostFragment.getButtons();
-			    
 			}
 			
 			private boolean isInsideButton(MotionEvent e, Button b) {
@@ -152,7 +152,7 @@ public class BoardActivity extends ActionBarActivity {
 			}
 			
 			private Button getTouchedButton(MotionEvent e) {
-				for (Button b : mButtons) {
+				for (Button b : mTileButtons) {
 					if (isInsideButton(e, b)) {
 						return b;
 					}
@@ -161,10 +161,79 @@ public class BoardActivity extends ActionBarActivity {
 				return null;
 			}
 			
-			private Direction getPotentialDirections() {
+			private Direction getPotentialDirection() {
 				
 				return Direction.RIGHT;
 			
+			}
+			
+			private float limitDx(float dX) {
+				
+				switch (mDirection) {
+				case RIGHT:
+					if (dX > mCurButton.getWidth()) {
+	                	dX = mCurButton.getWidth();
+	                }
+					
+					if (dX < 0) {
+						dX = 0;
+					}
+					
+					break;
+				case LEFT:
+					if (dX < ((-1) * mCurButton.getWidth())) {
+						dX = -mCurButton.getWidth();
+					}
+					
+					if (dX > 0) {
+						dX = 0;
+					}
+					
+					break;
+					
+				case UP:
+				case DOWN:
+					dX = 0;
+					break;
+				default:
+					assert false;
+				}
+				
+				return dX;
+			}
+			
+			private float limitDy(float dY) {
+				
+				switch (mDirection) {
+				case LEFT:
+				case RIGHT:
+					dY = 0;
+					break;
+					
+				case UP:
+					if (dY < -mCurButton.getHeight()) {
+						dY = -mCurButton.getHeight();
+					}
+					
+					if (dY > 0) {
+						dY = 0;
+					}
+					break;
+					
+				case DOWN:
+					if (dY > mCurButton.getHeight()) {
+						dY = mCurButton.getHeight();
+					} 
+					
+					if (dY < 0) {
+						dY = 0;
+					}
+					
+					break;
+					
+				}
+				
+				return dY;
 			}
 			
 			@Override
@@ -191,15 +260,11 @@ public class BoardActivity extends ActionBarActivity {
 				            mLeft = mCurButton.getLeft();
 			                mTop = mCurButton.getTop();
 			                
-			                
 			        	} else { // No button has been touched
 			        		mMoving = false;
 			        	}
 			        	
-			        	Direction d =getPotentialDirections();
-			        	
-			        	mMovingHor = false;
-			        	mMovingVert = false;
+			        	mDirection = getPotentialDirection();
 			        	
 			            break;
 			        }
@@ -217,24 +282,16 @@ public class BoardActivity extends ActionBarActivity {
 			        		dX = (event.getX() - mPrevX); // dx of a button
 			                dY = (event.getY() - mPrevY);
 			                
-			                // Need to decide if we are moving horizontally or vertically 
-			                if ((mMovingHor == false) && (mMovingVert == false)) {
-			                	if (Math.abs(dX) >= Math.abs(dY)) { // TODO: what is dX == dY
-			                		mMovingHor = true;
-			                	} else {
-			                		mMovingVert = true;
-			                	}
-			                }
+			                dX = limitDx(dX);
+			                dY = limitDy(dY);
 			                
-			                MarginLayoutParams marginParams = new MarginLayoutParams(mCurButton.getWidth(), mCurButton.getHeight());
-			                
-			                if (mMovingHor) {
+			               //if (mMovingHor) {
 			                  leftMargin = mLeft + (int) dX; // change only x if we are moving horizontally
-			                  topMargin = mTop;
-			                } else if (mMovingVert) {
-			                  leftMargin = mLeft;
+			                //  topMargin = mTop;
+			                //} else if (mMovingVert) {
+			                //  leftMargin = mLeft;
 			                  topMargin = mTop + (int) dY; // change only y if we are moving vertically
-			                }
+			                //}
 			                
 			                int left = view.getLeft(); // get X margin of a Frame view
 			                int top = view.getTop();  // get Y margin of a Frame view
@@ -258,7 +315,8 @@ public class BoardActivity extends ActionBarActivity {
 			                		"; r = " + topMargin);
 			                */
 			                
-			                // Update button's position 
+			                // Update button's position
+			                MarginLayoutParams marginParams = new MarginLayoutParams(mCurButton.getWidth(), mCurButton.getHeight());
 			                marginParams.setMargins(leftMargin, topMargin, 0, 0);
 			                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
 			                
@@ -271,16 +329,57 @@ public class BoardActivity extends ActionBarActivity {
 		
 			        case MotionEvent.ACTION_CANCEL:
 
-			        	mMovingHor = false;
-			        	mMovingVert = false;
+			        	//mMovingHor = false;
+			        	//mMovingVert = false;
 			        	mCurButton = null;
 			        	
 			            break;
 		
 			        case MotionEvent.ACTION_UP:
 
-			        	mMovingHor = false;
-			        	mMovingVert = false;
+			        	int left = mCurButton.getLeft();
+			        	int top = mCurButton.getTop();
+			        	
+			        	
+			        	switch (mDirection) {
+			        	case DOWN:
+			        		if ((top - mTop) > mCurButton.getHeight()/2) {
+			        			top = mTop + mCurButton.getHeight();
+			        		} else {
+			        			top = mTop;
+			        		}
+			                
+			        		break;
+			        	case UP:
+			        		if ((mTop - top) > mCurButton.getHeight()/2) {
+			        			top = mTop - mCurButton.getHeight();
+			        		} else {
+			        			top = mTop;
+			        		}
+			        		
+			        		break;
+			        	case LEFT:
+			        		if ((mLeft - left) > mCurButton.getWidth()/2) {
+			        			left = mLeft - mCurButton.getWidth();
+			        		} else {
+			        			left = mLeft;
+			        		}
+			        		break;
+			        	case RIGHT:
+			        		if ((left - mLeft) > mCurButton.getWidth()/2){
+			        			left = mLeft + mCurButton.getWidth();
+			        		} else {
+			        			left = mLeft;
+			        		}
+			        		break;
+			        	}
+			        	
+			        	MarginLayoutParams marginParams = new MarginLayoutParams(mCurButton.getWidth(), mCurButton.getHeight());
+		                marginParams.setMargins(left, top, 0, 0);
+		                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
+		                
+		                mCurButton.setLayoutParams(layoutParams);
+			        	
 			        	mCurButton = null;
 			        	
 			            break;
