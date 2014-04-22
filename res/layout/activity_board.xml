@@ -3,5 +3,5 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="mszhidko.games.movingtile.BoardActivity"
+    tools:context="mszhidko.games.puzzle15.BoardActivity"
     tools:ignore="MergeRootFrame" />

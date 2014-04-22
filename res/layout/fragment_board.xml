@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="mszhidko.games.movingtile.BoardActivity$PlaceholderFragment" 
+    tools:context="mszhidko.games.puzzle15.BoardActivity$PlaceholderFragment" 
     android:id="@+id/boardFragment">
 
     <FrameLayout
@@ -15,7 +15,7 @@
     </FrameLayout>
         
     
-    <mszhidko.games.movingtile.TileButton
+    <mszhidko.games.puzzle15.TileButton
 	android:id="@+id/tileButton1"
 	android:layout_width="100dp"
 	android:layout_height="100dp"
@@ -23,7 +23,7 @@
 	android:layout_marginTop="100dp"
 	android:text="1" />
     
-    <mszhidko.games.movingtile.TileButton
+    <mszhidko.games.puzzle15.TileButton
 	android:id="@+id/tileButton2"
 	android:layout_width="100dp"
 	android:layout_height="100dp"
@@ -31,7 +31,7 @@
 	android:layout_marginTop="200dp"
 	android:text="2" />
     
-    <mszhidko.games.movingtile.TileButton
+    <mszhidko.games.puzzle15.TileButton
 	android:id="@+id/tileButton3"
 	android:layout_width="100dp"
 	android:layout_height="100dp"
@@ -39,7 +39,7 @@
 	android:layout_marginTop="100dp"
 	android:text="3" />
     
-    <mszhidko.games.movingtile.TileButton
+    <mszhidko.games.puzzle15.TileButton
 	android:id="@+id/tileButton4"
 	android:layout_width="100dp"
 	android:layout_height="100dp"
