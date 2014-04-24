@@ -54,7 +54,6 @@ public class Board {
     		}
     	}
     	
-    	
     	return initial_board;
     }
     

@@ -21,7 +21,7 @@
 	android:layout_height="100dp"
 	android:layout_marginLeft="50dp"
 	android:layout_marginTop="100dp"
-	android:text="6" />
+	/>
     
     <mszhidko.games.puzzle15.TileButton
 	android:id="@+id/tileButton2"
@@ -29,7 +29,7 @@
 	android:layout_height="100dp"
 	android:layout_marginLeft="150dp"
 	android:layout_marginTop="100dp"
-	android:text="1" />
+	/>
     
     <mszhidko.games.puzzle15.TileButton
 	android:id="@+id/tileButton3"
@@ -37,7 +37,7 @@
 	android:layout_height="100dp"
 	android:layout_marginLeft="250dp"
 	android:layout_marginTop="100dp"
-	android:text="3" />
+	/>
     
     <mszhidko.games.puzzle15.TileButton
 	android:id="@+id/tileButton4"
@@ -45,7 +45,7 @@
 	android:layout_height="100dp"
 	android:layout_marginLeft="50dp"
 	android:layout_marginTop="200dp"
-	android:text="4" />
+	/>
     
     <mszhidko.games.puzzle15.TileButton
 	android:id="@+id/tileButton5"
@@ -53,7 +53,7 @@
 	android:layout_height="100dp"
 	android:layout_marginLeft="150dp"
 	android:layout_marginTop="200dp"
-	android:text="2" />
+	/>
     
     <mszhidko.games.puzzle15.TileButton
 	android:id="@+id/tileButton6"
@@ -61,7 +61,7 @@
 	android:layout_height="100dp"
 	android:layout_marginLeft="250dp"
 	android:layout_marginTop="200dp"
-	android:text="5" />
+	/>
      
     <mszhidko.games.puzzle15.TileButton
 	android:id="@+id/tileButton7"
@@ -69,7 +69,7 @@
 	android:layout_height="100dp"
 	android:layout_marginLeft="50dp"
 	android:layout_marginTop="300dp"
-	android:text="7" />
+	/>
     
     <mszhidko.games.puzzle15.TileButton
 	android:id="@+id/tileButton8"
@@ -77,7 +77,7 @@
 	android:layout_height="100dp"
 	android:layout_marginLeft="150dp"
 	android:layout_marginTop="300dp"
-	android:text="8" />
+	/>
     
 
 </RelativeLayout>

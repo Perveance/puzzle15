@@ -103,6 +103,7 @@ public class BoardActivity extends ActionBarActivity {
 						mButtons[i][j].setFrame(mFrame);
 						int[] tag = {i, j};
 						mButtons[i][j].setTag(tag);
+						mButtons[i][j].setText(String.valueOf(mBoard.get(i, j)));
 					}
 				}
 			}
@@ -261,15 +262,10 @@ public class BoardActivity extends ActionBarActivity {
 			    switch (action ) {
 			        case MotionEvent.ACTION_DOWN: {
 		
-			        	//Log.i("Mikhail", "ACTION_DOWN: getX="+event.getX() + "; getY=" + event.getY());
-			        	//Log.i("Mikhail", "ACTION_DOWN: getRawX="+event.getRawX() + "; getRawY=" + event.getRawY());
-			        	
 			        	mCurButton = (TileButton) getTouchedButton(event);
 			        	
 			        	if (mCurButton != null) { // Button has been touched
 			        		
-			        		//Log.i("Mikhail", "INSIDE");
-			        		//Log.i("Mikhail", "left=" + left + "; right=" + right + "; top=" + top + "bottom=" + bottom + "; h="+height+"; w="+width);
 			        		mDirection = getPotentialDirection();
 			        		Log.i("Mikhail", "Direction = " + mDirection);
 			        		if (mDirection != Direction.NONE) { // TODO: merge this if with if (mCurButton != null)
@@ -293,8 +289,6 @@ public class BoardActivity extends ActionBarActivity {
 		
 			        case MotionEvent.ACTION_MOVE:
 			        {
-			        	//Log.i("Mikhail", "ACTION_MOVE: getX="+event.getX() + "; getY=" + event.getY());
-			        	//Log.i("Mikhail", "ACTION_MOVE: getRawX="+event.getRawX() + "; getRawY=" + event.getRawY());
 			        	
 			        	if (mMoving == true) {
 			        		int leftMargin = 0; /* Of a touched button inside the RelativeLayout */
@@ -326,11 +320,6 @@ public class BoardActivity extends ActionBarActivity {
 			                	topMargin = top + view.getHeight() - bHeight;
 			                }
 			                
-			                /*
-			                Log.i("Mikhail", "x=" + boardLocation[0] + "px; y=" + boardLocation[1] + "px; l=" + leftMargin + 
-			                		"; r = " + topMargin);
-			                */
-			                
 			                // Update button's position
 			                MarginLayoutParams marginParams = new MarginLayoutParams(mCurButton.getWidth(), mCurButton.getHeight());
 			                marginParams.setMargins(leftMargin, topMargin, 0, 0);
@@ -345,8 +334,6 @@ public class BoardActivity extends ActionBarActivity {
 		
 			        case MotionEvent.ACTION_CANCEL:
 
-			        	//mMovingHor = false;
-			        	//mMovingVert = false;
 			        	mCurButton = null;
 			        	
 			            break;
@@ -422,8 +409,6 @@ public class BoardActivity extends ActionBarActivity {
 		}
 
 	}
-	
-	
 
 }
 
