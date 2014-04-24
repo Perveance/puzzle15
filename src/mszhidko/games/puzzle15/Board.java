@@ -4,6 +4,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import android.util.Log;
+
+import mszhidko.games.puzzle15.BoardActivity.PlaceholderFragment.Direction;
+
 public class Board {
 
 	private int N;
@@ -152,6 +156,38 @@ public class Board {
 		}
 		
     	return false;
+    }
+    
+    public Direction getDirection(int i, int j) {
+    	
+    	Log.i("Mikhail", "getDirection: i = " + i + "; j = " + j);
+    	
+		if (i != 0) {
+			if (blocks[i - 1][j] == 0) {
+				return Direction.UP;
+			}
+		}
+		
+		if (i != N - 1) {
+			if (blocks[i + 1][j] == 0) {
+				return Direction.DOWN;
+			}
+		}
+		
+		if (j != 0) {
+			if (blocks[i][j - 1] == 0) {
+				return Direction.LEFT;
+			}
+		}
+		
+		if (j != N - 1) {
+			if (blocks[i][j + 1] == 0) {
+				return Direction.RIGHT;
+			}
+		}
+		
+    	//return false;
+		return Direction.NONE;
     }
 
     private int numberOfWrongBlocks() {
