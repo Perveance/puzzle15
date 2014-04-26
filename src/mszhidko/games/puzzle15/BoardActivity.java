@@ -7,6 +7,7 @@ import mszhidko.games.movingtile.R;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.annotation.TargetApi;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,11 +18,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.MarginLayoutParams;
+import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.os.Build;
 
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class BoardActivity extends ActionBarActivity {
 
 	@Override
@@ -54,27 +58,38 @@ public class BoardActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	
 
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
 	public static class PlaceholderFragment extends Fragment {
 
-		
 		private FrameLayout mFrame;
 		private RelativeLayout mLayout;
-		private TileButton[][] mButtons = new TileButton[3][3];
+		private TileButton[][] mButtons;
 		private Board mBoard;
 		
+		protected int mBoardWidth;
+		protected int mBoardHeight;
+		protected int mBoardTop;
+		protected int mBoardLeft;
+		private boolean isUiInited;
+		private int N;
+		
 		public PlaceholderFragment() {
-			int initial_board[][] = {{6, 1, 3}, {4, 2, 5}, {7, 8, 0 }};
+			int initial_board[][] = {{6, 1, 3, 12}, {4, 2, 5, 10}, {7, 8, 0, 9 }, {1, 2, 3, 4}};
 			
 			mBoard = new Board(initial_board);
+			N = mBoard.dimension();
+			mButtons = new TileButton[N][N];
 		}
-
+		
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
+			
 			View rootView = inflater.inflate(R.layout.fragment_board,
 					container, false);
 			
@@ -92,23 +107,71 @@ public class BoardActivity extends ActionBarActivity {
 				mLayout.setBackgroundColor(0xFF111111);
 			}
 			
-			int buttonIds[][] = {{R.id.tileButton1, R.id.tileButton2, R.id.tileButton3}, 
-								{R.id.tileButton4, R.id.tileButton5, R.id.tileButton6},
-								{R.id.tileButton7, R.id.tileButton8, 0}};
+			mLayout.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+	            @Override
+	            public void onGlobalLayout() {
+	            	
+	            	if (!isUiInited) {
+	            		Log.i("Mikhail", "onGlobalLayout called");
+	                	initializeUI();
+	            	} else {
+	            		mLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+	            	}
+	            	
+	            	
+	            }
+	        });
 			
-			for (int i = 0; i < 3; i++) {
-				for (int j = 0; j < 3; j++) {
-					if (buttonIds[i][j] != 0) {
-						mButtons[i][j] = (TileButton) rootView.findViewById(buttonIds[i][j]);
+			//mLayout.getViewTreeObserver().re
+			
+			return rootView;
+		}
+		
+		public void onActivityCreated(Bundle savedInstanceState) {
+			super.onActivityCreated(savedInstanceState);
+			
+		}
+		
+		protected void initializeUI() {
+			if (!isUiInited) {
+				mBoardHeight = mFrame.getMeasuredHeight();
+		        mBoardWidth = mFrame.getMeasuredWidth();
+		        Log.i("Mikhail", "initializeUI; mBoardHeight=" + mBoardHeight + "; mBoardWidth=" + mBoardWidth);
+		        
+		        int buttonWidth = mBoardWidth / N;
+				int buttonHeight = mBoardHeight / N;
+				mBoardLeft = mFrame.getLeft();
+				mBoardTop = mFrame.getTop();
+				
+				for (int i = 0; i < N; i++) {
+					for (int j = 0; j < N; j++) {
+						if(mBoard.get(i, j) == 0) {
+							continue;
+						}
+						
+						mButtons[i][j] = new TileButton(getActivity());
 						mButtons[i][j].setFrame(mFrame);
 						int[] tag = {i, j};
 						mButtons[i][j].setTag(tag);
 						mButtons[i][j].setText(String.valueOf(mBoard.get(i, j)));
+						
+						MarginLayoutParams marginParams = new MarginLayoutParams(buttonWidth, buttonHeight);
+		                marginParams.setMargins(mBoardLeft + j * buttonWidth, mBoardTop + i * buttonHeight, 0, 0);
+		                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
+						//RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(buttonWidth, buttonHeight);
+					    //layoutParams.leftMargin = mBoardLeft + j * buttonWidth;
+					    //layoutParams.topMargin = mBoardLeft + i * buttonHeight;
+					    //layoutParams.bottomMargin = 0;
+					    //layoutParams.rightMargin = 0;
+		                
+		                mButtons[i][j].setLayoutParams(layoutParams);
+		                mLayout.addView(mButtons[i][j]);
+			                
 					}
 				}
+				isUiInited = true;
 			}
 			
-			return rootView;
 		}
 		
 		public Button[][] getButtons() {
@@ -130,13 +193,11 @@ public class BoardActivity extends ActionBarActivity {
 			private float mPrevY;
 			private int mLeft;
 			private int mTop;
-			private boolean mMoving/*, mMovingHor, mMovingVert*/;
+			private boolean mMoving;
 			private PlaceholderFragment hostFragment;
-			private TileButton[][] mTileButtons= new TileButton[3][3];
+			private TileButton[][] mTileButtons= new TileButton[N][N];
 			private TileButton mCurButton; 
 			Direction mDirection;
-			
-			//private int mXmin, mXmax, mYmin, mYmax;
 			
 			public MultiTouchListener(PlaceholderFragment boardFragment) {
 			    hostFragment = boardFragment;
