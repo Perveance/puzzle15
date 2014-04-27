@@ -58,15 +58,13 @@ public class BoardActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-	
 
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
 	public static class PlaceholderFragment extends Fragment {
 
-		private FrameLayout mFrame;
+		//private FrameLayout mFrame;
 		private RelativeLayout mLayout;
 		private TileButton[][] mButtons;
 		private Board mBoard;
@@ -93,15 +91,9 @@ public class BoardActivity extends ActionBarActivity {
 			View rootView = inflater.inflate(R.layout.fragment_board,
 					container, false);
 			
-			mFrame = (FrameLayout) rootView.findViewById(R.id.frame);
-			if (mFrame != null) {
-				
-				mFrame.setBackgroundColor(0xFFAAAAAA);
-				MultiTouchListener touchListener = new MultiTouchListener(this);
-			    mFrame.setOnTouchListener(touchListener);
+			MultiTouchListener touchListener = new MultiTouchListener(this);
+		    rootView.setOnTouchListener(touchListener);
 			    
-			}
-			
 			mLayout = (RelativeLayout) rootView.findViewById(R.id.boardFragment);
 			if (mLayout != null) {
 				mLayout.setBackgroundColor(0xFF111111);
@@ -118,11 +110,8 @@ public class BoardActivity extends ActionBarActivity {
 	            		mLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 	            	}
 	            	
-	            	
 	            }
 	        });
-			
-			//mLayout.getViewTreeObserver().re
 			
 			return rootView;
 		}
@@ -134,14 +123,16 @@ public class BoardActivity extends ActionBarActivity {
 		
 		protected void initializeUI() {
 			if (!isUiInited) {
-				mBoardHeight = mFrame.getMeasuredHeight();
-		        mBoardWidth = mFrame.getMeasuredWidth();
+				
+				View v = this.getView();
+				mBoardHeight = v.getMeasuredHeight();
+		        mBoardWidth = v.getMeasuredWidth();
 		        Log.i("Mikhail", "initializeUI; mBoardHeight=" + mBoardHeight + "; mBoardWidth=" + mBoardWidth);
 		        
 		        int buttonWidth = mBoardWidth / N;
 				int buttonHeight = mBoardHeight / N;
-				mBoardLeft = mFrame.getLeft();
-				mBoardTop = mFrame.getTop();
+				mBoardLeft = v.getLeft();
+				mBoardTop = v.getTop();
 				
 				for (int i = 0; i < N; i++) {
 					for (int j = 0; j < N; j++) {
@@ -150,14 +141,16 @@ public class BoardActivity extends ActionBarActivity {
 						}
 						
 						mButtons[i][j] = new TileButton(getActivity());
-						mButtons[i][j].setFrame(mFrame);
+						mButtons[i][j].setFrame(v);
 						int[] tag = {i, j};
 						mButtons[i][j].setTag(tag);
 						mButtons[i][j].setText(String.valueOf(mBoard.get(i, j)));
+						mButtons[i][j].setBackgroundColor(0xAAFFB10B);
 						
-						MarginLayoutParams marginParams = new MarginLayoutParams(buttonWidth, buttonHeight);
+						MarginLayoutParams marginParams = new MarginLayoutParams(buttonWidth - 4, buttonHeight - 4);
 		                marginParams.setMargins(mBoardLeft + j * buttonWidth, mBoardTop + i * buttonHeight, 0, 0);
 		                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
+		                
 						//RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(buttonWidth, buttonHeight);
 					    //layoutParams.leftMargin = mBoardLeft + j * buttonWidth;
 					    //layoutParams.topMargin = mBoardLeft + i * buttonHeight;
@@ -178,9 +171,9 @@ public class BoardActivity extends ActionBarActivity {
 			return mButtons;
 		}
 		
-		public FrameLayout getBoard() {
-			return mFrame;
-		}
+		//public View getBoard() {
+		//	return mFrame;
+		//}
 		
 		public enum Direction {
 		    LEFT, RIGHT, UP, DOWN, NONE
@@ -251,7 +244,7 @@ public class BoardActivity extends ActionBarActivity {
 				switch (mDirection) {
 				case RIGHT:
 					if (dX > mCurButton.getWidth()) {
-	                	dX = mCurButton.getWidth();
+	                	dX = mCurButton.getWidth() + 4;
 	                }
 					
 					if (dX < 0) {
@@ -261,7 +254,7 @@ public class BoardActivity extends ActionBarActivity {
 					break;
 				case LEFT:
 					if (dX < ((-1) * mCurButton.getWidth())) {
-						dX = -mCurButton.getWidth();
+						dX = -mCurButton.getWidth() - 4;
 					}
 					
 					if (dX > 0) {
@@ -291,7 +284,7 @@ public class BoardActivity extends ActionBarActivity {
 					
 				case UP:
 					if (dY < -mCurButton.getHeight()) {
-						dY = -mCurButton.getHeight();
+						dY = -mCurButton.getHeight() - 4;
 					}
 					
 					if (dY > 0) {
@@ -301,7 +294,7 @@ public class BoardActivity extends ActionBarActivity {
 					
 				case DOWN:
 					if (dY > mCurButton.getHeight()) {
-						dY = mCurButton.getHeight();
+						dY = mCurButton.getHeight() + 4;
 					} 
 					
 					if (dY < 0) {
@@ -411,7 +404,7 @@ public class BoardActivity extends ActionBarActivity {
 				        		if ((top - mTop) > mCurButton.getHeight()/4) {
 				        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
 				        			mCurButton.setI(mCurButton.getI() + 1);
-				        			top = mTop + mCurButton.getHeight();
+				        			top = mTop + mCurButton.getHeight() + 4;
 				        		} else {
 				        			top = mTop;
 				        		}
@@ -422,7 +415,7 @@ public class BoardActivity extends ActionBarActivity {
 				        		if ((mTop - top) > mCurButton.getHeight()/4) {
 				        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
 				        			mCurButton.setI(mCurButton.getI() - 1);
-				        			top = mTop - mCurButton.getHeight();
+				        			top = mTop - mCurButton.getHeight() - 4;
 				        		} else {
 				        			top = mTop;
 				        		}
@@ -433,7 +426,7 @@ public class BoardActivity extends ActionBarActivity {
 				        		if ((mLeft - left) > mCurButton.getWidth()/4) {
 				        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
 				        			mCurButton.setJ(mCurButton.getJ() - 1);
-				        			left = mLeft - mCurButton.getWidth();
+				        			left = mLeft - mCurButton.getWidth() - 4;
 				        		} else {
 				        			left = mLeft;
 				        		}
@@ -443,7 +436,7 @@ public class BoardActivity extends ActionBarActivity {
 				        		if ((left - mLeft) > mCurButton.getWidth()/4){
 				        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
 				        			mCurButton.setJ(mCurButton.getJ() + 1);
-				        			left = mLeft + mCurButton.getWidth();
+				        			left = mLeft + mCurButton.getWidth() + 4;
 				        		} else {
 				        			left = mLeft;
 				        		}

@@ -5,14 +5,4 @@
     tools:context="mszhidko.games.puzzle15.BoardActivity$PlaceholderFragment" 
     android:id="@+id/boardFragment">
 
-    <FrameLayout
-        android:id="@+id/frame"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="100dp"
-        >
-    </FrameLayout>
-        
-    
 </RelativeLayout>
