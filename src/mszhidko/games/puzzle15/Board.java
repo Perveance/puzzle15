@@ -40,14 +40,15 @@ public class Board {
     	}
     }
     
-    static public int[][] generate_board() {
-    	int initial_board[][] = {{0, 1, 3}, {4, 2, 5}, {7, 8, 6 }};
+    static public int[][] generate_board(int n) {
+    	
+    	int initial_board[][] = new int[n][n];
     	Set<Integer> s = new HashSet<Integer>();
-    	for (int i = 0; i < 3; i++) {
-    		for (int j = 0; j < 3; j++) {
-    			int val = (int)(Math.random() * 9);
+    	for (int i = 0; i < n; i++) {
+    		for (int j = 0; j < n; j++) {
+    			int val = (int)(Math.random() * n * n);
     			while (s.add(Integer.valueOf(val)) == false) {
-    				val = (int) (Math.random() * 9);
+    				val = (int) (Math.random() * n * n);
     			}
     			initial_board[i][j] = val;
     			
@@ -185,7 +186,6 @@ public class Board {
 			}
 		}
 		
-    	//return false;
 		return Direction.NONE;
     }
 

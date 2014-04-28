@@ -9,12 +9,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.annotation.TargetApi;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.MarginLayoutParams;
@@ -23,6 +25,7 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 import android.os.Build;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -64,7 +67,6 @@ public class BoardActivity extends ActionBarActivity {
 	 */
 	public static class PlaceholderFragment extends Fragment {
 
-		//private FrameLayout mFrame;
 		private RelativeLayout mLayout;
 		private TileButton[][] mButtons;
 		private Board mBoard;
@@ -77,11 +79,44 @@ public class BoardActivity extends ActionBarActivity {
 		private int N;
 		
 		public PlaceholderFragment() {
-			int initial_board[][] = {{6, 1, 3, 12}, {4, 2, 5, 10}, {7, 8, 0, 9 }, {1, 2, 3, 4}};
+			//int initial_board[][] = {{6, 1, 3, 12}, {4, 2, 5, 10}, {7, 8, 0, 9 }, {1, 2, 3, 4}};
 			
-			mBoard = new Board(initial_board);
-			N = mBoard.dimension();
+			N = 3;
+			mBoard = new Board(Board.generate_board(N));
 			mButtons = new TileButton[N][N];
+			
+			final Handler toastHandler = new Handler();
+			
+			new Thread( new Runnable() {
+				
+				@Override
+				public void run() {
+					Solver solver = new Solver(mBoard);
+					
+					final StringBuffer body = new StringBuffer("");
+					
+				    // print solution to standard output
+				    if (!solver.isSolvable()) {
+				        body.append("No solution possible");
+				    } else {
+				        body.append("Minimum number of moves = " + solver.moves() + "\n");
+				        //for (Board board : solver.solution())
+				        //    body += board.toString() + "\n";
+				    }
+				    
+				    Runnable anotherRunnable = new Runnable() {
+						
+						public void run() {
+							Toast.makeText(	getActivity(), 
+											body, 
+											Toast.LENGTH_LONG).show();
+							}
+					};
+				    toastHandler.post(anotherRunnable);
+					
+				}
+			}).start();
+				
 		}
 		
 		@Override
@@ -151,12 +186,6 @@ public class BoardActivity extends ActionBarActivity {
 		                marginParams.setMargins(mBoardLeft + j * buttonWidth, mBoardTop + i * buttonHeight, 0, 0);
 		                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
 		                
-						//RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(buttonWidth, buttonHeight);
-					    //layoutParams.leftMargin = mBoardLeft + j * buttonWidth;
-					    //layoutParams.topMargin = mBoardLeft + i * buttonHeight;
-					    //layoutParams.bottomMargin = 0;
-					    //layoutParams.rightMargin = 0;
-		                
 		                mButtons[i][j].setLayoutParams(layoutParams);
 		                mLayout.addView(mButtons[i][j]);
 			                
@@ -170,10 +199,6 @@ public class BoardActivity extends ActionBarActivity {
 		public Button[][] getButtons() {
 			return mButtons;
 		}
-		
-		//public View getBoard() {
-		//	return mFrame;
-		//}
 		
 		public enum Direction {
 		    LEFT, RIGHT, UP, DOWN, NONE
@@ -247,9 +272,8 @@ public class BoardActivity extends ActionBarActivity {
 	                	dX = mCurButton.getWidth() + 4;
 	                }
 					
-					if (dX < 0) {
+					if (dX < 0)
 						dX = 0;
-					}
 					
 					break;
 				case LEFT:
@@ -257,9 +281,8 @@ public class BoardActivity extends ActionBarActivity {
 						dX = -mCurButton.getWidth() - 4;
 					}
 					
-					if (dX > 0) {
+					if (dX > 0)
 						dX = 0;
-					}
 					
 					break;
 					
@@ -283,23 +306,20 @@ public class BoardActivity extends ActionBarActivity {
 					break;
 					
 				case UP:
-					if (dY < -mCurButton.getHeight()) {
+					if (dY < -mCurButton.getHeight())
 						dY = -mCurButton.getHeight() - 4;
-					}
 					
-					if (dY > 0) {
+					if (dY > 0)
 						dY = 0;
-					}
+					
 					break;
 					
 				case DOWN:
-					if (dY > mCurButton.getHeight()) {
+					if (dY > mCurButton.getHeight())
 						dY = mCurButton.getHeight() + 4;
-					} 
 					
-					if (dY < 0) {
+					if (dY < 0)
 						dY = 0;
-					}
 					
 					break;
 					
