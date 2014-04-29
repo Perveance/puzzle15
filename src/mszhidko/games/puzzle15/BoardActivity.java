@@ -1,5 +1,6 @@
 package mszhidko.games.puzzle15;
 
+import java.util.Calendar;
 import java.util.Random;
 
 import mszhidko.games.movingtile.R;
@@ -112,6 +113,7 @@ public class BoardActivity extends ActionBarActivity {
 											Toast.LENGTH_LONG).show();
 							}
 					};
+					
 				    toastHandler.post(anotherRunnable);
 					
 				}
@@ -216,6 +218,7 @@ public class BoardActivity extends ActionBarActivity {
 			private TileButton[][] mTileButtons= new TileButton[N][N];
 			private TileButton mCurButton; 
 			Direction mDirection;
+			private long mStartTime;
 			
 			public MultiTouchListener(PlaceholderFragment boardFragment) {
 			    hostFragment = boardFragment;
@@ -349,6 +352,8 @@ public class BoardActivity extends ActionBarActivity {
 	
 					            mLeft = mCurButton.getLeft();
 				                mTop = mCurButton.getTop();
+				                
+				                mStartTime = Calendar.getInstance().getTimeInMillis();
 			        		} else {
 			        			mMoving = false;
 			        		}
@@ -417,11 +422,22 @@ public class BoardActivity extends ActionBarActivity {
 			        	if (mMoving == true) {
 				        	int left = mCurButton.getLeft();
 				        	int top = mCurButton.getTop();
+				        	int dx = left - mLeft;
+				        	int dy = top - mTop;
+				        	long dt = Calendar.getInstance().getTimeInMillis() - mStartTime;
+				        	boolean isClick = false;
+				        	
+				        	// Identify click by duration and distance
+				        	if (mDirection != Direction.NONE) {
+				        		if (dx < 5 && dy < 5 && dt < 400) {
+				        			isClick = true;
+				        		}
+				        	}
 				        	
 				        	switch (mDirection) {
 				        	case DOWN:
 				        		
-				        		if ((top - mTop) > mCurButton.getHeight()/4) {
+				        		if ((top - mTop) > mCurButton.getHeight()/4 || isClick) {
 				        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
 				        			mCurButton.setI(mCurButton.getI() + 1);
 				        			top = mTop + mCurButton.getHeight() + 4;
@@ -432,7 +448,7 @@ public class BoardActivity extends ActionBarActivity {
 				        		break;
 				        	case UP:
 				        		
-				        		if ((mTop - top) > mCurButton.getHeight()/4) {
+				        		if ((mTop - top) > mCurButton.getHeight()/4 || isClick) {
 				        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
 				        			mCurButton.setI(mCurButton.getI() - 1);
 				        			top = mTop - mCurButton.getHeight() - 4;
@@ -443,7 +459,7 @@ public class BoardActivity extends ActionBarActivity {
 				        		break;
 				        	case LEFT:
 				        		
-				        		if ((mLeft - left) > mCurButton.getWidth()/4) {
+				        		if ((mLeft - left) > mCurButton.getWidth()/4 || isClick) {
 				        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
 				        			mCurButton.setJ(mCurButton.getJ() - 1);
 				        			left = mLeft - mCurButton.getWidth() - 4;
@@ -453,7 +469,7 @@ public class BoardActivity extends ActionBarActivity {
 				        		break;
 				        	case RIGHT:
 				        		
-				        		if ((left - mLeft) > mCurButton.getWidth()/4){
+				        		if ((left - mLeft) > mCurButton.getWidth()/4 || isClick){
 				        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
 				        			mCurButton.setJ(mCurButton.getJ() + 1);
 				        			left = mLeft + mCurButton.getWidth() + 4;
