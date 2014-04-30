@@ -23,6 +23,9 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
@@ -211,8 +214,8 @@ public class BoardActivity extends ActionBarActivity {
 
 			private float mPrevX;
 			private float mPrevY;
-			private int mLeft;
-			private int mTop;
+			private int mLeft, mNewLeft;
+			private int mTop, mNewTop;
 			private boolean mMoving;
 			private PlaceholderFragment hostFragment;
 			private TileButton[][] mTileButtons= new TileButton[N][N];
@@ -421,11 +424,17 @@ public class BoardActivity extends ActionBarActivity {
 
 			        	if (mMoving == true) {
 				        	int left = mCurButton.getLeft();
+				        	//int startX = left;
+				        	
 				        	int top = mCurButton.getTop();
+				        	//int startY = top;
+				        	
 				        	int dx = left - mLeft;
 				        	int dy = top - mTop;
 				        	long dt = Calendar.getInstance().getTimeInMillis() - mStartTime;
 				        	boolean isClick = false;
+				        	
+				        	TranslateAnimation animation = null;
 				        	
 				        	// Identify click by duration and distance
 				        	if (mDirection != Direction.NONE) {
@@ -434,62 +443,112 @@ public class BoardActivity extends ActionBarActivity {
 				        		}
 				        	}
 				        	
+				        	
 				        	switch (mDirection) {
 				        	case DOWN:
 				        		
-				        		if ((top - mTop) > mCurButton.getHeight()/4 || isClick) {
+				        		if ((top - mTop) > mCurButton.getHeight()/4 || isClick) { // Moving tile
+				        			
 				        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
 				        			mCurButton.setI(mCurButton.getI() + 1);
-				        			top = mTop + mCurButton.getHeight() + 4;
-				        		} else {
-				        			top = mTop;
+				        			mNewTop = mTop + mCurButton.getHeight() + 4;
+				        			
+				        		} else { // Not moving the tile, just return to original position
+				        			
+				        			mNewTop = mTop;
+				        			
 				        		}
+				        		
+				        		mNewLeft = left;
 				                
 				        		break;
 				        	case UP:
 				        		
 				        		if ((mTop - top) > mCurButton.getHeight()/4 || isClick) {
+
 				        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
 				        			mCurButton.setI(mCurButton.getI() - 1);
-				        			top = mTop - mCurButton.getHeight() - 4;
+				        			mNewTop = mTop - mCurButton.getHeight() - 4;
+				        			
 				        		} else {
-				        			top = mTop;
+				        			mNewTop = mTop;
 				        		}
+				        		
+				        		mNewLeft = left;
 				        		
 				        		break;
 				        	case LEFT:
 				        		
 				        		if ((mLeft - left) > mCurButton.getWidth()/4 || isClick) {
+				        			
 				        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
 				        			mCurButton.setJ(mCurButton.getJ() - 1);
-				        			left = mLeft - mCurButton.getWidth() - 4;
+				        			mNewLeft = mLeft - mCurButton.getWidth() - 4;
+				        			
 				        		} else {
-				        			left = mLeft;
+				        			mNewLeft = mLeft;
 				        		}
+				        		
+			        			mNewTop = top;
+			        			
 				        		break;
 				        	case RIGHT:
 				        		
 				        		if ((left - mLeft) > mCurButton.getWidth()/4 || isClick){
+				        			
 				        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
 				        			mCurButton.setJ(mCurButton.getJ() + 1);
-				        			left = mLeft + mCurButton.getWidth() + 4;
+				        			mNewLeft = mLeft + mCurButton.getWidth() + 4;
+				        		
 				        		} else {
-				        			left = mLeft;
+				        			mNewLeft = mLeft;
 				        		}
+				        		
+				        		mNewTop = top;
+				        		
 				        		break;
 				        	}
 				        	
-				        	MarginLayoutParams marginParams = new MarginLayoutParams(mCurButton.getWidth(), mCurButton.getHeight());
-			                marginParams.setMargins(left, top, 0, 0);
-			                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
-			                
-			                mCurButton.setLayoutParams(layoutParams);
+				        	animation = new TranslateAnimation(0, mNewLeft - left, 0, mNewTop - top);
+				        	
+				        	if (animation != null) {
+				        		
+				        		animation.setAnimationListener(new AnimationListener() {
+									
+									@Override
+									public void onAnimationStart(Animation animation) {
+									}
+									
+									@Override
+									public void onAnimationRepeat(Animation animation) {
+									}
+									
+									@Override
+									public void onAnimationEnd(Animation animation) {
+										MarginLayoutParams marginParams = new MarginLayoutParams(mCurButton.getWidth(), mCurButton.getHeight());
+					                	marginParams.setMargins(mNewLeft, mNewTop, 0, 0);
+					                	RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
+					                
+					                	Log.i("Mikhail", "onAnimationEnd! mTop=" + mTop + "; mNewTop=" + mNewTop);
+					                	mCurButton.setLayoutParams(layoutParams);
+					                	mCurButton = null;
+									}
+								});
+				        		
+				        		animation.setDuration(200); // duartion in ms
+				        		animation.setFillAfter(false);
+				        		animation.setFillEnabled(true);
+				        		animation.setFillBefore(false);
+				        		mCurButton.startAnimation(animation);
+				        		
+				        	}
+				        	
 			                mMoving = false;
 			        	}
 			        	
-			        	mCurButton = null;
-			        	
-			        	
+			        	//mCurButton = null;
+			        	Log.i("Mikhail", "onTouch finished; mTop=" + mTop + "; mNewTop=" + mNewTop);
+			       
 			            break;
 			    }
 		
