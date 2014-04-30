@@ -334,6 +334,79 @@ public class BoardActivity extends ActionBarActivity {
 				return dY;
 			}
 			
+			private void moveTile(int left, int top, boolean isClick) {
+	        	switch (mDirection) {
+	        	case DOWN:
+	        		
+	        		if ((top - mTop) > mCurButton.getHeight()/4 || isClick) { // Moving tile
+	        			
+	        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
+	        			mCurButton.setI(mCurButton.getI() + 1);
+	        			mNewTop = mTop + mCurButton.getHeight() + 4;
+	        			
+	        		} else { // Not moving the tile, just return to original position
+	        			
+	        			mNewTop = mTop;
+	        			
+	        		}
+	        		
+	        		mNewLeft = left;
+	                
+	        		break;
+	        	case UP:
+	        		
+	        		if ((mTop - top) > mCurButton.getHeight()/4 || isClick) {
+
+	        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
+	        			mCurButton.setI(mCurButton.getI() - 1);
+	        			mNewTop = mTop - mCurButton.getHeight() - 4;
+	        			
+	        		} else {
+	        			mNewTop = mTop;
+	        		}
+	        		
+	        		mNewLeft = left;
+	        		
+	        		break;
+	        	case LEFT:
+	        		
+	        		if ((mLeft - left) > mCurButton.getWidth()/4 || isClick) {
+	        			
+	        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
+	        			mCurButton.setJ(mCurButton.getJ() - 1);
+	        			mNewLeft = mLeft - mCurButton.getWidth() - 4;
+	        			
+	        		} else {
+	        			mNewLeft = mLeft;
+	        		}
+	        		
+        			mNewTop = top;
+        			
+	        		break;
+	        	case RIGHT:
+	        		
+	        		if ((left - mLeft) > mCurButton.getWidth()/4 || isClick){
+	        			
+	        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
+	        			mCurButton.setJ(mCurButton.getJ() + 1);
+	        			mNewLeft = mLeft + mCurButton.getWidth() + 4;
+	        		
+	        		} else {
+	        			mNewLeft = mLeft;
+	        		}
+	        		
+	        		mNewTop = top;
+	        		
+	        		break;
+	        		
+	        	case NONE:
+	        		
+	        		mNewLeft = left;
+	        		mNewTop = top;
+	        		
+	        	}
+			}
+			
 			@Override
 			public boolean onTouch(View view, MotionEvent event) {
 			    float dX, dY;
@@ -443,106 +516,38 @@ public class BoardActivity extends ActionBarActivity {
 				        		}
 				        	}
 				        	
-				        	
-				        	switch (mDirection) {
-				        	case DOWN:
-				        		
-				        		if ((top - mTop) > mCurButton.getHeight()/4 || isClick) { // Moving tile
-				        			
-				        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
-				        			mCurButton.setI(mCurButton.getI() + 1);
-				        			mNewTop = mTop + mCurButton.getHeight() + 4;
-				        			
-				        		} else { // Not moving the tile, just return to original position
-				        			
-				        			mNewTop = mTop;
-				        			
-				        		}
-				        		
-				        		mNewLeft = left;
-				                
-				        		break;
-				        	case UP:
-				        		
-				        		if ((mTop - top) > mCurButton.getHeight()/4 || isClick) {
-
-				        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
-				        			mCurButton.setI(mCurButton.getI() - 1);
-				        			mNewTop = mTop - mCurButton.getHeight() - 4;
-				        			
-				        		} else {
-				        			mNewTop = mTop;
-				        		}
-				        		
-				        		mNewLeft = left;
-				        		
-				        		break;
-				        	case LEFT:
-				        		
-				        		if ((mLeft - left) > mCurButton.getWidth()/4 || isClick) {
-				        			
-				        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
-				        			mCurButton.setJ(mCurButton.getJ() - 1);
-				        			mNewLeft = mLeft - mCurButton.getWidth() - 4;
-				        			
-				        		} else {
-				        			mNewLeft = mLeft;
-				        		}
-				        		
-			        			mNewTop = top;
-			        			
-				        		break;
-				        	case RIGHT:
-				        		
-				        		if ((left - mLeft) > mCurButton.getWidth()/4 || isClick){
-				        			
-				        			mBoard.move(mCurButton.getI(), mCurButton.getJ());
-				        			mCurButton.setJ(mCurButton.getJ() + 1);
-				        			mNewLeft = mLeft + mCurButton.getWidth() + 4;
-				        		
-				        		} else {
-				        			mNewLeft = mLeft;
-				        		}
-				        		
-				        		mNewTop = top;
-				        		
-				        		break;
-				        	}
+				        	moveTile(left, top, isClick);
 				        	
 				        	animation = new TranslateAnimation(0, mNewLeft - left, 0, mNewTop - top);
 				        	
-				        	if (animation != null) {
+			        		animation.setAnimationListener(new AnimationListener() {
+								
+								@Override
+								public void onAnimationStart(Animation animation) {
+								}
+								
+								@Override
+								public void onAnimationRepeat(Animation animation) {
+								}
+								
+								@Override
+								public void onAnimationEnd(Animation animation) {
+									MarginLayoutParams marginParams = new MarginLayoutParams(mCurButton.getWidth(), mCurButton.getHeight());
+				                	marginParams.setMargins(mNewLeft, mNewTop, 0, 0);
+				                	RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
+				                
+				                	Log.i("Mikhail", "onAnimationEnd! mTop=" + mTop + "; mNewTop=" + mNewTop);
+				                	mCurButton.setLayoutParams(layoutParams);
+				                	mCurButton = null;
+								}
+							});
+			        		
+			        		animation.setDuration(200); // duartion in ms TODO: Duration should be proportional to distance
+			        		animation.setFillAfter(false);
+			        		animation.setFillEnabled(true);
+			        		animation.setFillBefore(false);
+			        		mCurButton.startAnimation(animation);
 				        		
-				        		animation.setAnimationListener(new AnimationListener() {
-									
-									@Override
-									public void onAnimationStart(Animation animation) {
-									}
-									
-									@Override
-									public void onAnimationRepeat(Animation animation) {
-									}
-									
-									@Override
-									public void onAnimationEnd(Animation animation) {
-										MarginLayoutParams marginParams = new MarginLayoutParams(mCurButton.getWidth(), mCurButton.getHeight());
-					                	marginParams.setMargins(mNewLeft, mNewTop, 0, 0);
-					                	RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
-					                
-					                	Log.i("Mikhail", "onAnimationEnd! mTop=" + mTop + "; mNewTop=" + mNewTop);
-					                	mCurButton.setLayoutParams(layoutParams);
-					                	mCurButton = null;
-									}
-								});
-				        		
-				        		animation.setDuration(200); // duartion in ms
-				        		animation.setFillAfter(false);
-				        		animation.setFillEnabled(true);
-				        		animation.setFillBefore(false);
-				        		mCurButton.startAnimation(animation);
-				        		
-				        	}
-				        	
 			                mMoving = false;
 			        	}
 			        	
