@@ -4,5 +4,10 @@
     <string name="app_name">MovingTile</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
+    <string name="easy_puzzle_button">Easy 2x2</string>
+    <string name="normal_puzzle_button">Normal 3x3</string>
+    <string name="difficult_puzzle_button">Difficult 4x4</string>
+    <string name="very_difficult_puzzle_button">Very difficult 5x5</string>
+    <string name="custom_puzzle_button">Custom puzzle</string>
+    <string name="exit_button">Exit</string>
 </resources>

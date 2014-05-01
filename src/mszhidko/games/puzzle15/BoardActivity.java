@@ -22,10 +22,13 @@ import android.widget.Toast;
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class BoardActivity extends ActionBarActivity {
 
+	static int mDim;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_board);
+		mDim = getIntent().getIntExtra(GameMenuActivity.PUZZLE_DIMENTION, 3);
 
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
@@ -76,7 +79,7 @@ public class BoardActivity extends ActionBarActivity {
 		public PlaceholderFragment() {
 			//int initial_board[][] = {{6, 1, 3, 12}, {4, 2, 5, 10}, {7, 8, 0, 9 }, {1, 2, 3, 4}};
 			
-			N = 3;
+			N = mDim;
 			mBoard = new Board(Board.generate_board(N));
 			mButtons = new TileButton[N][N];
 			
