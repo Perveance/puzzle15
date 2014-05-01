@@ -116,6 +116,7 @@ public class MultiTouchListener implements OnTouchListener
 		switch (mDirection) {
 		case LEFT:
 		case RIGHT:
+		case NONE:
 			dY = 0;
 			break;
 			
@@ -242,6 +243,7 @@ public class MultiTouchListener implements OnTouchListener
 			                mStartTime = Calendar.getInstance().getTimeInMillis();
 		        		} else {
 		        			mMoving = false;
+		        			mCurButton = null;
 		        		}
 	
 		        	} else { // No button has been touched
