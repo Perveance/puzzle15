@@ -5,6 +5,7 @@ import java.util.Calendar;
 import mszhidko.games.puzzle15.BoardActivity.PlaceholderFragment;
 import mszhidko.games.puzzle15.BoardActivity.PlaceholderFragment.Direction;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -23,19 +24,50 @@ public class MultiTouchListener implements OnTouchListener
 	private int mLeft, mNewLeft;
 	private int mTop, mNewTop;
 	private boolean mMoving;
+	
+	// This listener is set to a PuzzleGame fragment
 	private PlaceholderFragment hostFragment;
 	private TileButton[][] mTileButtons;
-	private TileButton mCurButton; 
-	Direction mDirection;
-	private long mStartTime;
+	private TileButton mCurButton; // Only one button can be moved at a time
+	Direction mDirection; 		// Which direction the button can be moved
+	private long mStartTime;	// To distinguish click from move
+	
+	private GestureDetector mGestureDetector;
 	
 	public MultiTouchListener(PlaceholderFragment boardFragment) {
 
 		hostFragment = boardFragment;
 	    mTileButtons = (TileButton[][]) hostFragment.getButtons();
 	    
+	    mGestureDetector = new GestureDetector(hostFragment.getActivity(),
+				new GestureDetector.SimpleOnGestureListener() {
+					@Override
+					public boolean onFling(MotionEvent e1, MotionEvent e2,
+							float velocityX, float velocityY) {
+						/*if (velocityX < -10.0f) {
+							mCurrentLayoutState = mCurrentLayoutState == 0 ? 1
+									: 0;
+							switchLayoutStateTo(mCurrentLayoutState);
+						}*/
+						
+						
+						/*if (mCurButton == null) {
+							
+							mCurButton = (TileButton) getTouchedButton(e1);
+							
+							if (mCurButton != null) {
+								
+							}
+						}*/
+						
+						Log.i("Mikhail", "    <<< GestureDetector: onFling! >>>");
+						return false;
+					}
+				});
+	    
 	}
 	
+	// Check whether a button was clicked
 	private boolean isInsideButton(MotionEvent e, Button b) {
 		
 		float x = e.getRawX();
@@ -216,9 +248,24 @@ public class MultiTouchListener implements OnTouchListener
     	}
 	}
 	
+	private int getAnimationDuration(int maxDuration, int dx, int dy) {
+		
+		int dt = 0;
+		
+		if (Math.abs(dx) >= Math.abs(dy)) {
+			dt = (int) ((float) maxDuration * ( (float) Math.abs(dx) / (float) mCurButton.getHeight()));
+		} else {
+			dt = (int) ((float) maxDuration * ((float) Math.abs(dy) / (float) mCurButton.getWidth()));
+		}
+		
+		return dt;
+	}
+	
 	@Override
 	public boolean onTouch(View view, MotionEvent event) {
 	    float dX, dY;
+	    
+	    mGestureDetector.onTouchEvent(event);
 	    
 	    int action = event.getAction();
 	    switch (action ) {
@@ -233,15 +280,15 @@ public class MultiTouchListener implements OnTouchListener
 		        		mDirection = getPotentialDirection();
 		        		Log.i("Mikhail", "Direction = " + mDirection);
 		        		if (mDirection != Direction.NONE) { // TODO: merge this if with if (mCurButton != null)
-		        			mMoving = true;
-		        			mPrevX = event.getX();
+		        			mMoving = true; // Flag that indicates that the button can be moved
+		        			mPrevX = event.getX(); 
 				        	mPrevY = event.getY();
 	
 				            mLeft = mCurButton.getLeft();
 			                mTop = mCurButton.getTop();
 			                
 			                mStartTime = Calendar.getInstance().getTimeInMillis();
-		        		} else {
+		        		} else { // Button cannot be moved
 		        			mMoving = false;
 		        			mCurButton = null;
 		        		}
@@ -329,9 +376,11 @@ public class MultiTouchListener implements OnTouchListener
 		        		}
 		        	}
 		        	
-		        	moveTile(left, top, isClick);
+		        	moveTile(left, top, isClick); // This method will update mNewLeft & mNew Top
 		        	
-		        	animation = new TranslateAnimation(0, mNewLeft - left, 0, mNewTop - top);
+		        	dx = mNewLeft - left;
+		        	dy = mNewTop - top;
+		        	animation = new TranslateAnimation(0, dx, 0, dy);
 		        	
 	        		animation.setAnimationListener(new AnimationListener() {
 						
@@ -355,7 +404,7 @@ public class MultiTouchListener implements OnTouchListener
 						}
 					});
 	        		
-	        		animation.setDuration(200); // duartion in ms TODO: Duration should be proportional to distance
+	        		animation.setDuration(getAnimationDuration(200, dx, dy)); // duration in ms TODO: Duration should be proportional to distance
 	        		animation.setFillAfter(false);
 	        		animation.setFillEnabled(true);
 	        		animation.setFillBefore(false);
@@ -364,7 +413,6 @@ public class MultiTouchListener implements OnTouchListener
 	                mMoving = false;
 	        	}
 	        	
-	        	//mCurButton = null;
 	        	Log.i("Mikhail", "onTouch finished; mTop=" + mTop + "; mNewTop=" + mNewTop);
 	       
 	            break;
