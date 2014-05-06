@@ -50,6 +50,7 @@
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
         android:text="@string/custom_puzzle_button"
+        android:visibility="invisible"
         android:layout_weight="1"  />
     
     <Button
