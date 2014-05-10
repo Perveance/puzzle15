@@ -30,4 +30,11 @@
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>assets/Boards3x3.pzl</name>
+			<type>1</type>
+			<location>/Users/mikhail/Documents/workspace_new/GeneratePuzzlesDB/Boards3x3.pzl</location>
+		</link>
+	</linkedResources>
 </projectDescription>

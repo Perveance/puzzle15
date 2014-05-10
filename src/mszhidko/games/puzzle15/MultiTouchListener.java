@@ -15,6 +15,7 @@ import android.view.animation.TranslateAnimation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class MultiTouchListener implements OnTouchListener
 {
@@ -24,6 +25,7 @@ public class MultiTouchListener implements OnTouchListener
 	private int mLeft, mNewLeft;
 	private int mTop, mNewTop;
 	private boolean mMoving;
+	private boolean mIsSolved = false;
 	
 	// This listener is set to a PuzzleGame fragment
 	private PlaceholderFragment hostFragment;
@@ -32,6 +34,7 @@ public class MultiTouchListener implements OnTouchListener
 	Direction mDirection; 		// Which direction the button can be moved
 	private long mStartTime;	// To distinguish click from move
 	
+	// Used to detect flings
 	private GestureDetector mGestureDetector;
 	
 	public MultiTouchListener(PlaceholderFragment boardFragment) {
@@ -44,6 +47,11 @@ public class MultiTouchListener implements OnTouchListener
 					@Override
 					public boolean onFling(MotionEvent e1, MotionEvent e2,
 							float velocityX, float velocityY) {
+						
+						//
+						// TODO: implement proper swipe detection and handling
+						//
+						
 						/*if (velocityX < -10.0f) {
 							mCurrentLayoutState = mCurrentLayoutState == 0 ? 1
 									: 0;
@@ -176,6 +184,7 @@ public class MultiTouchListener implements OnTouchListener
 	}
 	
 	private void moveTile(int left, int top, boolean isClick) {
+		
     	switch (mDirection) {
     	case DOWN:
     		
@@ -246,6 +255,7 @@ public class MultiTouchListener implements OnTouchListener
     		mNewTop = top;
     		
     	}
+    	
 	}
 	
 	private int getAnimationDuration(int maxDuration, int dx, int dy) {
@@ -265,7 +275,10 @@ public class MultiTouchListener implements OnTouchListener
 	public boolean onTouch(View view, MotionEvent event) {
 	    float dX, dY;
 	    
-	    mGestureDetector.onTouchEvent(event);
+	    if (mIsSolved) {
+			return true;
+		}	    
+	    //mGestureDetector.onTouchEvent(event);
 	    
 	    int action = event.getAction();
 	    switch (action ) {
@@ -376,7 +389,8 @@ public class MultiTouchListener implements OnTouchListener
 		        		}
 		        	}
 		        	
-		        	moveTile(left, top, isClick); // This method will update mNewLeft & mNew Top
+		        	moveTile(left, top, isClick); // This method will update mNewLeft & mNewTop
+		        	mIsSolved = hostFragment.getBoard().isGoal();
 		        	
 		        	dx = mNewLeft - left;
 		        	dy = mNewTop - top;
@@ -401,7 +415,24 @@ public class MultiTouchListener implements OnTouchListener
 		                	Log.i("Mikhail", "onAnimationEnd! mTop=" + mTop + "; mNewTop=" + mNewTop);
 		                	mCurButton.setLayoutParams(layoutParams);
 		                	mCurButton = null;
+		                	
+		                	if (mIsSolved) {
+		                		Toast.makeText(hostFragment.getActivity(), 
+									"Solved!", 
+									Toast.LENGTH_LONG).show();
+		                		
+		                		//Log.i("Mikhail", "--> Before <--");
+		                		//hostFragment.onSolved();
+		                		//Log.i("Mikhail", "--> After <--");
+		                		
+		                		
+		                		//if (v == null) {
+		                		//	Log.i("Mikhail", "<<< NULL >>>");
+		                		//}
+		                		//v.setClickable(false);
+		                	}
 						}
+						
 					});
 	        		
 	        		animation.setDuration(getAnimationDuration(200, dx, dy)); // duration in ms TODO: Duration should be proportional to distance

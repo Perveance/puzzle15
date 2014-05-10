@@ -1,4 +1,5 @@
 package mszhidko.games.puzzle15;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -8,7 +9,7 @@ import android.util.Log;
 
 import mszhidko.games.puzzle15.BoardActivity.PlaceholderFragment.Direction;
 
-public class Board {
+public class Board implements Serializable {
 
 	private int N;
 	private int moves;
