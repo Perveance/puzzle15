@@ -33,6 +33,7 @@ public class MultiTouchListener implements OnTouchListener
 	private TileButton mCurButton; // Only one button can be moved at a time
 	Direction mDirection; 		// Which direction the button can be moved
 	private long mStartTime;	// To distinguish click from move
+	final int ANIMATION_SPEED = 60;
 	
 	// Used to detect flings
 	private GestureDetector mGestureDetector;
@@ -278,7 +279,8 @@ public class MultiTouchListener implements OnTouchListener
 	    if (mIsSolved) {
 			return true;
 		}	    
-	    //mGestureDetector.onTouchEvent(event);
+	    
+	    mGestureDetector.onTouchEvent(event);
 	    
 	    int action = event.getAction();
 	    switch (action ) {
@@ -292,7 +294,7 @@ public class MultiTouchListener implements OnTouchListener
 		        		
 		        		mDirection = getPotentialDirection();
 		        		Log.i("Mikhail", "Direction = " + mDirection);
-		        		if (mDirection != Direction.NONE) { // TODO: merge this if with if (mCurButton != null)
+		        		if (mDirection != Direction.NONE) {
 		        			mMoving = true; // Flag that indicates that the button can be moved
 		        			mPrevX = event.getX(); 
 				        	mPrevY = event.getY();
@@ -384,7 +386,7 @@ public class MultiTouchListener implements OnTouchListener
 		        	
 		        	// Identify click by duration and distance
 		        	if (mDirection != Direction.NONE) {
-		        		if (dx < 5 && dy < 5 && dt < 400) {
+		        		if (dx < 10 && dy < 10 && dt < 400) {
 		        			isClick = true;
 		        		}
 		        	}
@@ -435,7 +437,7 @@ public class MultiTouchListener implements OnTouchListener
 						
 					});
 	        		
-	        		animation.setDuration(getAnimationDuration(200, dx, dy)); // duration in ms TODO: Duration should be proportional to distance
+	        		animation.setDuration(getAnimationDuration(calcButtonSpeed(dx, dy), dx, dy));
 	        		animation.setFillAfter(false);
 	        		animation.setFillEnabled(true);
 	        		animation.setFillBefore(false);
@@ -450,6 +452,15 @@ public class MultiTouchListener implements OnTouchListener
 	    }
 
 	    return true;
+	}
+	
+	private int calcButtonSpeed(int dx, int dy) {
+		
+		int distance = (Math.abs(dx) > Math.abs(dy)) ? Math.abs(dx) : Math.abs(dy);
+		int speed = mCurButton.getWidth() / ANIMATION_SPEED;
+		int duration = distance / speed;
+		
+		return duration;
 	}
 
 }
