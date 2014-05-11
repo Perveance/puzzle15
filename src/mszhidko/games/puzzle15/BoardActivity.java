@@ -89,6 +89,7 @@ public class BoardActivity extends ActionBarActivity {
 		protected int mBoardLeft;
 		private boolean isUiInited;
 		private int N;
+		MultiTouchListener mTouchListener;
 		
 		public PlaceholderFragment() {
 
@@ -136,6 +137,10 @@ public class BoardActivity extends ActionBarActivity {
 				}
 			}).start();*/
 				
+		}
+
+		void resetButton() { /* The button has been moved (with animation) to a new position */
+			mTouchListener.resetButton();
 		}
 		
 		int[][] generateBoard(int dim) {
@@ -327,8 +332,9 @@ public class BoardActivity extends ActionBarActivity {
 			View rootView = inflater.inflate(R.layout.fragment_board,
 					container, false);
 			
-			MultiTouchListener touchListener = new MultiTouchListener(this);
-		    rootView.setOnTouchListener(touchListener);
+			mTouchListener = new MultiTouchListener(this);
+			
+		    rootView.setOnTouchListener(mTouchListener);
 			    
 			mLayout = (RelativeLayout) rootView.findViewById(R.id.boardFragment);
 			if (mLayout != null) {
@@ -380,7 +386,7 @@ public class BoardActivity extends ActionBarActivity {
 						}
 						
 						mButtons[i][j] = new TileButton(getActivity());
-						mButtons[i][j].setFrame(v);
+						mButtons[i][j].setFrame(this);
 						int[] tag = {i, j};
 						mButtons[i][j].setTag(tag);
 						mButtons[i][j].setText(String.valueOf(mBoard.get(i, j)));

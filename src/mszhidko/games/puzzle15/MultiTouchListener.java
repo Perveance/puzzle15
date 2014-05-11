@@ -36,14 +36,14 @@ public class MultiTouchListener implements OnTouchListener
 	final int ANIMATION_SPEED = 60;
 	
 	// Used to detect flings
-	private GestureDetector mGestureDetector;
+	//private GestureDetector mGestureDetector;
 	
 	public MultiTouchListener(PlaceholderFragment boardFragment) {
 
 		hostFragment = boardFragment;
 	    mTileButtons = (TileButton[][]) hostFragment.getButtons();
 	    
-	    mGestureDetector = new GestureDetector(hostFragment.getActivity(),
+	    /*mGestureDetector = new GestureDetector(hostFragment.getActivity(),
 				new GestureDetector.SimpleOnGestureListener() {
 					@Override
 					public boolean onFling(MotionEvent e1, MotionEvent e2,
@@ -53,26 +53,11 @@ public class MultiTouchListener implements OnTouchListener
 						// TODO: implement proper swipe detection and handling
 						//
 						
-						/*if (velocityX < -10.0f) {
-							mCurrentLayoutState = mCurrentLayoutState == 0 ? 1
-									: 0;
-							switchLayoutStateTo(mCurrentLayoutState);
-						}*/
-						
-						
-						/*if (mCurButton == null) {
-							
-							mCurButton = (TileButton) getTouchedButton(e1);
-							
-							if (mCurButton != null) {
-								
-							}
-						}*/
 						
 						Log.i("Mikhail", "    <<< GestureDetector: onFling! >>>");
 						return false;
 					}
-				});
+				});*/
 	    
 	}
 	
@@ -189,11 +174,15 @@ public class MultiTouchListener implements OnTouchListener
     	switch (mDirection) {
     	case DOWN:
     		
-    		if ((top - mTop) > mCurButton.getHeight()/4 || isClick) { // Moving tile
+    		if ((top - mTop) > mCurButton.getHeight()/6 || isClick) { // Moving tile
     			
-    			hostFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
-    			mCurButton.setI(mCurButton.getI() + 1);
-    			mNewTop = mTop + mCurButton.getHeight() + 4;
+    			boolean ret = hostFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
+    			if (ret) {
+    				mCurButton.setI(mCurButton.getI() + 1);
+    				mNewTop = mTop + mCurButton.getHeight() + 4;
+    			} else {
+    				mNewTop = mTop;
+    			}
     			
     		} else { // Not moving the tile, just return to original position
     			
@@ -206,11 +195,15 @@ public class MultiTouchListener implements OnTouchListener
     		break;
     	case UP:
     		
-    		if ((mTop - top) > mCurButton.getHeight()/4 || isClick) {
+    		if ((mTop - top) > mCurButton.getHeight()/6 || isClick) {
 
-    			hostFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
-    			mCurButton.setI(mCurButton.getI() - 1);
-    			mNewTop = mTop - mCurButton.getHeight() - 4;
+    			boolean ret = hostFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
+    			if (ret) {
+    				mCurButton.setI(mCurButton.getI() - 1);
+    				mNewTop = mTop - mCurButton.getHeight() - 4;
+    			} else {
+    				mNewTop = mTop;
+    			}
     			
     		} else {
     			mNewTop = mTop;
@@ -221,11 +214,16 @@ public class MultiTouchListener implements OnTouchListener
     		break;
     	case LEFT:
     		
-    		if ((mLeft - left) > mCurButton.getWidth()/4 || isClick) {
+    		if ((mLeft - left) > mCurButton.getWidth()/6 || isClick) {
     			
-    			hostFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
-    			mCurButton.setJ(mCurButton.getJ() - 1);
-    			mNewLeft = mLeft - mCurButton.getWidth() - 4;
+    			
+    			boolean ret = hostFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
+    			if (ret) {
+    				mCurButton.setJ(mCurButton.getJ() - 1);
+    				mNewLeft = mLeft - mCurButton.getWidth() - 4;
+    			} else {
+    				mNewLeft = mLeft;
+    			}
     			
     		} else {
     			mNewLeft = mLeft;
@@ -236,11 +234,15 @@ public class MultiTouchListener implements OnTouchListener
     		break;
     	case RIGHT:
     		
-    		if ((left - mLeft) > mCurButton.getWidth()/4 || isClick){
+    		if ((left - mLeft) > mCurButton.getWidth()/6 || isClick){
     			
-    			hostFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
-    			mCurButton.setJ(mCurButton.getJ() + 1);
-    			mNewLeft = mLeft + mCurButton.getWidth() + 4;
+    			boolean ret = hostFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
+    			if (ret) {
+    				mCurButton.setJ(mCurButton.getJ() + 1);
+    				mNewLeft = mLeft + mCurButton.getWidth() + 4;
+    			} else {
+    				mNewLeft = mLeft;
+    			}
     		
     		} else {
     			mNewLeft = mLeft;
@@ -276,14 +278,14 @@ public class MultiTouchListener implements OnTouchListener
 	public boolean onTouch(View view, MotionEvent event) {
 	    float dX, dY;
 	    
-	    if (mIsSolved) {
+	    if (mIsSolved) { /* */
 			return true;
 		}	    
 	    
-	    mGestureDetector.onTouchEvent(event);
+	    //mGestureDetector.onTouchEvent(event);
 	    
 	    int action = event.getAction();
-	    switch (action ) {
+	    switch (action) {
 	        case MotionEvent.ACTION_DOWN: {
 
 	        	if (mCurButton == null) {
@@ -293,10 +295,10 @@ public class MultiTouchListener implements OnTouchListener
 		        	if (mCurButton != null) { // Button has been touched
 		        		
 		        		mDirection = getPotentialDirection();
-		        		Log.i("Mikhail", "Direction = " + mDirection);
+		        		//Log.i("Mikhail", "Direction = " + mDirection);
 		        		if (mDirection != Direction.NONE) {
 		        			mMoving = true; // Flag that indicates that the button can be moved
-		        			mPrevX = event.getX(); 
+		        			mPrevX = event.getX(); // Set original X and Y of the button 
 				        	mPrevY = event.getY();
 	
 				            mLeft = mCurButton.getLeft();
@@ -309,12 +311,12 @@ public class MultiTouchListener implements OnTouchListener
 		        		}
 	
 		        	} else { // No button has been touched
-		        		Log.i("Mikhail", "No button has been touched!");
+		        		//Log.i("Mikhail", "No button has been touched!");
 		        		mMoving = false;
 		        	}
 	        	}
 	        	
-	            break;
+	            break; // Out of ACTION_DOWN
 	        }
 
 	        case MotionEvent.ACTION_MOVE:
@@ -325,7 +327,7 @@ public class MultiTouchListener implements OnTouchListener
 	        		int topMargin = 0; /* Of a touched button inside the RelativeLayout */
 	                
 	        		dX = (event.getX() - mPrevX); // dx of a button
-	                dY = (event.getY() - mPrevY);
+	                dY = (event.getY() - mPrevY); // local variable
 	                
 	                dX = limitDx(dX);
 	                dY = limitDy(dY);
@@ -339,16 +341,6 @@ public class MultiTouchListener implements OnTouchListener
 	                // Make sure the button doesn't leave the Frame's borders
 	                leftMargin = leftMargin < left ? left : leftMargin;
 	                topMargin = topMargin < top ? top : topMargin;
-	                int bWidth = mCurButton.getWidth();
-	                int bHeight = mCurButton.getHeight();
-	                
-	                if (leftMargin + bWidth > left + view.getWidth()) {
-	                	leftMargin = left + view.getWidth() - bWidth;
-	                }
-	                
-	                if (topMargin + bHeight > top + view.getHeight()) {
-	                	topMargin = top + view.getHeight() - bHeight;
-	                }
 	                
 	                // Update button's position
 	                MarginLayoutParams marginParams = new MarginLayoutParams(mCurButton.getWidth(), mCurButton.getHeight());
@@ -364,21 +356,17 @@ public class MultiTouchListener implements OnTouchListener
 
 	        case MotionEvent.ACTION_CANCEL:
 
-	        	mCurButton = null;
-	        	
-	            break;
-
 	        case MotionEvent.ACTION_UP:
-
+	        	
 	        	if (mMoving == true) {
-		        	int left = mCurButton.getLeft();
+		        	int left = mCurButton.getLeft(); // Current position
 		        	//int startX = left;
 		        	
-		        	int top = mCurButton.getTop();
+		        	int top = mCurButton.getTop(); // Current position
 		        	//int startY = top;
 		        	
-		        	int dx = left - mLeft;
-		        	int dy = top - mTop;
+		        	int dx = left - mLeft; // dx that button has traveled since ACTION_DOWN
+		        	int dy = top - mTop;   // dy that button has traveled since ACTION_DOWN
 		        	long dt = Calendar.getInstance().getTimeInMillis() - mStartTime;
 		        	boolean isClick = false;
 		        	
@@ -386,7 +374,7 @@ public class MultiTouchListener implements OnTouchListener
 		        	
 		        	// Identify click by duration and distance
 		        	if (mDirection != Direction.NONE) {
-		        		if (dx < 10 && dy < 10 && dt < 400) {
+		        		if (dx < 10 && dy < 10 && dt < 300) {
 		        			isClick = true;
 		        		}
 		        	}
@@ -394,8 +382,8 @@ public class MultiTouchListener implements OnTouchListener
 		        	moveTile(left, top, isClick); // This method will update mNewLeft & mNewTop
 		        	mIsSolved = hostFragment.getBoard().isGoal();
 		        	
-		        	dx = mNewLeft - left;
-		        	dy = mNewTop - top;
+		        	dx = mNewLeft - left; // new dx for animation 
+		        	dy = mNewTop - top; // new dy for animation
 		        	animation = new TranslateAnimation(0, dx, 0, dy);
 		        	
 	        		animation.setAnimationListener(new AnimationListener() {
@@ -410,28 +398,19 @@ public class MultiTouchListener implements OnTouchListener
 						
 						@Override
 						public void onAnimationEnd(Animation animation) {
+							
 							MarginLayoutParams marginParams = new MarginLayoutParams(mCurButton.getWidth(), mCurButton.getHeight());
 		                	marginParams.setMargins(mNewLeft, mNewTop, 0, 0);
 		                	RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
 		                
-		                	Log.i("Mikhail", "onAnimationEnd! mTop=" + mTop + "; mNewTop=" + mNewTop);
 		                	mCurButton.setLayoutParams(layoutParams);
-		                	mCurButton = null;
+		                	mCurButton.setResetButton();
 		                	
 		                	if (mIsSolved) {
 		                		Toast.makeText(hostFragment.getActivity(), 
 									"Solved!", 
 									Toast.LENGTH_LONG).show();
 		                		
-		                		//Log.i("Mikhail", "--> Before <--");
-		                		//hostFragment.onSolved();
-		                		//Log.i("Mikhail", "--> After <--");
-		                		
-		                		
-		                		//if (v == null) {
-		                		//	Log.i("Mikhail", "<<< NULL >>>");
-		                		//}
-		                		//v.setClickable(false);
 		                	}
 						}
 						
@@ -442,16 +421,20 @@ public class MultiTouchListener implements OnTouchListener
 	        		animation.setFillEnabled(true);
 	        		animation.setFillBefore(false);
 	        		mCurButton.startAnimation(animation);
-		        		
+	        		
 	                mMoving = false;
 	        	}
 	        	
-	        	Log.i("Mikhail", "onTouch finished; mTop=" + mTop + "; mNewTop=" + mNewTop);
-	       
 	            break;
 	    }
 
 	    return true;
+	}
+	
+	public void resetButton() {
+		
+		mCurButton = null;
+		
 	}
 	
 	private int calcButtonSpeed(int dx, int dy) {
