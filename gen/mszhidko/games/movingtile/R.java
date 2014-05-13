@@ -1254,8 +1254,11 @@ containing a value of this type.
         public static final int custom_puzzle_button=0x7f0a0014;
         public static final int difficult_puzzle_button=0x7f0a0012;
         public static final int easy_puzzle_button=0x7f0a0010;
+        public static final int exit=0x7f0a0017;
         public static final int exit_button=0x7f0a0015;
+        public static final int game_over=0x7f0a0016;
         public static final int hello_world=0x7f0a000e;
+        public static final int new_game=0x7f0a0018;
         public static final int normal_puzzle_button=0x7f0a0011;
         public static final int very_difficult_puzzle_button=0x7f0a0013;
     }

@@ -4,6 +4,7 @@ import java.util.Calendar;
 
 import mszhidko.games.puzzle15.BoardActivity.PlaceholderFragment;
 import mszhidko.games.puzzle15.BoardActivity.PlaceholderFragment.Direction;
+import android.app.Dialog;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -410,6 +411,8 @@ public class MultiTouchListener implements OnTouchListener
 		                		Toast.makeText(hostFragment.getActivity(), 
 									"Solved!", 
 									Toast.LENGTH_LONG).show();
+		                		
+		                		MultiTouchListener.this.hostFragment.gameOver();
 		                		
 		                	}
 						}

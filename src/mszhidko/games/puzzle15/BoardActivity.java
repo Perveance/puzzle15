@@ -11,12 +11,18 @@ import java.util.ArrayList;
 import mszhidko.games.movingtile.R;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.util.TypedValue;
@@ -35,6 +41,7 @@ import android.widget.Toast;
 public class BoardActivity extends ActionBarActivity {
 
 	static int mDim;
+	static PlaceholderFragment mBoardFrag;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +49,10 @@ public class BoardActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_board);
 		mDim = getIntent().getIntExtra(GameMenuActivity.PUZZLE_DIMENTION, 3);
 
+		mBoardFrag = new PlaceholderFragment();
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
+					.add(R.id.container, mBoardFrag).commit();
 		}
 	}
 
@@ -409,6 +417,50 @@ public class BoardActivity extends ActionBarActivity {
 		
 		public Button[][] getButtons() {
 			return mButtons;
+		}
+		
+		void gameOver() {
+			
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+	 
+				// Set title
+				alertDialogBuilder.setTitle("Game over!");
+	 
+				// Set dialog message
+				alertDialogBuilder
+					.setMessage("Play again?")
+					.setCancelable(false)
+					.setPositiveButton("Yes, let me play again!", new DialogInterface.OnClickListener() {
+						
+						public void onClick(DialogInterface dialog,int id) {
+							
+							FragmentManager manager = getActivity().getSupportFragmentManager();
+							FragmentTransaction trans = manager.beginTransaction();
+							trans.remove(PlaceholderFragment.this);
+							trans.commit();
+							
+							mBoardFrag = new PlaceholderFragment();
+							manager.beginTransaction().add(R.id.container, mBoardFrag).commit();
+							
+							manager.popBackStack();
+						}
+					  })
+					.setNegativeButton("Exit",new DialogInterface.OnClickListener() {
+						
+						public void onClick(DialogInterface dialog,int id) {
+							
+							getActivity().moveTaskToBack(true); 
+							getActivity().finish();
+							
+						}
+					});
+	 
+					// Create alert dialog
+					AlertDialog alertDialog = alertDialogBuilder.create();
+	 
+					// Show it
+					alertDialog.show();
+			
 		}
 		
 		public enum Direction {

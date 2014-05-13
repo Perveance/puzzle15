@@ -10,4 +10,7 @@
     <string name="very_difficult_puzzle_button">Very difficult 5x5</string>
     <string name="custom_puzzle_button">Custom puzzle</string>
     <string name="exit_button">Exit</string>
+    <string name="game_over">Game over!</string>
+    <string name="exit">Exit</string>
+    <string name="new_game">New game</string>
 </resources>
