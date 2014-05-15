@@ -71,6 +71,10 @@ public class Board implements Serializable {
     	return N;
     }
     
+    public int getMoves() {
+    	return moves;
+    }
+    
     // number of blocks out of place
     public int hamming() {
     	//System.out.println("moves = " + moves);

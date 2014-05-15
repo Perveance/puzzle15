@@ -33,8 +33,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.webkit.WebSettings.TextSize;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -84,6 +87,7 @@ public class BoardActivity extends ActionBarActivity {
 		private RelativeLayout mLayout;
 		private TileButton[][] mButtons;
 		private Board mBoard;
+		TextView mMovesTB;
 		
 		private final static String fileName = "TestFile.txt";
 		
@@ -379,23 +383,25 @@ public class BoardActivity extends ActionBarActivity {
 		        mBoardWidth = v.getMeasuredWidth();
 		        Log.i("Mikhail", "initializeUI; mBoardHeight=" + mBoardHeight + "; mBoardWidth=" + mBoardWidth);
 		        
+		        int infoPanelHeight = (int) (0.15 * (double) mBoardHeight); // Height of the panel where we show number of performed moves
+		        mBoardHeight -= infoPanelHeight;
+		        
 		        int buttonWidth = mBoardWidth / N;
 				int buttonHeight = mBoardHeight / N;
 				
 				int textSize =  160 / N;
 				mBoardLeft = v.getLeft();
-				mBoardTop = v.getTop();
+				mBoardTop = v.getTop() + infoPanelHeight; // Offset the buttons 
 				
 				for (int i = 0; i < N; i++) {
 					for (int j = 0; j < N; j++) {
-						if (mBoard.get(i, j) == 0) {
-							
+						if (mBoard.get(i, j) == 0) { // Empty slot
 							continue;
 						}
 						
 						mButtons[i][j] = new TileButton(getActivity());
 						mButtons[i][j].setFrame(this);
-						int[] tag = {i, j};
+						int[] tag = {i, j}; // Button's tag is the row, column in Board's class
 						mButtons[i][j].setTag(tag);
 						mButtons[i][j].setText(String.valueOf(mBoard.get(i, j)));
 						mButtons[i][j].setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
@@ -410,9 +416,26 @@ public class BoardActivity extends ActionBarActivity {
 			                
 					}
 				}
+				
+				// Create text view with number of performed moves
+				mMovesTB = new TextView(getActivity());
+				
+				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+						RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				params.setMargins(30, 30, 0, 0);
+				mMovesTB.setLayoutParams(params);
+				mMovesTB.setText("Moves: 0");
+				mMovesTB.setTextColor(0xFFCCCCCC);
+				mMovesTB.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
+				mLayout.addView(mMovesTB);
+		        
 				isUiInited = true;
 			}
 			
+		}
+		
+		protected void moveForward() {
+			mMovesTB.setText("Moves: " + mBoard.getMoves());
 		}
 		
 		public Button[][] getButtons() {

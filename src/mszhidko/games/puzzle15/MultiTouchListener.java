@@ -179,6 +179,7 @@ public class MultiTouchListener implements OnTouchListener
     			
     			boolean ret = hostFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
     			if (ret) {
+    				hostFragment.moveForward();
     				mCurButton.setI(mCurButton.getI() + 1);
     				mNewTop = mTop + mCurButton.getHeight() + 4;
     			} else {
@@ -200,6 +201,7 @@ public class MultiTouchListener implements OnTouchListener
 
     			boolean ret = hostFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
     			if (ret) {
+    				hostFragment.moveForward();
     				mCurButton.setI(mCurButton.getI() - 1);
     				mNewTop = mTop - mCurButton.getHeight() - 4;
     			} else {
@@ -220,6 +222,7 @@ public class MultiTouchListener implements OnTouchListener
     			
     			boolean ret = hostFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
     			if (ret) {
+    				hostFragment.moveForward();
     				mCurButton.setJ(mCurButton.getJ() - 1);
     				mNewLeft = mLeft - mCurButton.getWidth() - 4;
     			} else {
@@ -239,6 +242,7 @@ public class MultiTouchListener implements OnTouchListener
     			
     			boolean ret = hostFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
     			if (ret) {
+    				hostFragment.moveForward();
     				mCurButton.setJ(mCurButton.getJ() + 1);
     				mNewLeft = mLeft + mCurButton.getWidth() + 4;
     			} else {
@@ -407,8 +411,8 @@ public class MultiTouchListener implements OnTouchListener
 		                	
 		                	if (mIsSolved) {
 		                		Toast.makeText(hostFragment.getActivity(), 
-									"Solved!", 
-									Toast.LENGTH_LONG).show();
+									           "Solved!", 
+									           Toast.LENGTH_LONG).show();
 		                		
 		                		MultiTouchListener.this.hostFragment.gameOver();
 		                		
