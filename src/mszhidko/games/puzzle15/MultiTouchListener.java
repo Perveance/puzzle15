@@ -299,13 +299,13 @@ public class MultiTouchListener implements OnTouchListener
 		        		//Log.i("Mikhail", "Direction = " + mDirection);
 		        		if (mDirection != Direction.NONE) {
 		        			mMoving = true; // Flag that indicates that the button can be moved
-		        			mPrevX = event.getX(); // Set original X and Y of the button 
+		        			mPrevX = event.getX(); // Set original X and Y of the touch event 
 				        	mPrevY = event.getY();
 	
-				            mLeft = mCurButton.getLeft();
-			                mTop = mCurButton.getTop();
+				            mLeft = mCurButton.getLeft(); // First, save starting position of the button
+			                mTop = mCurButton.getTop();   // left and top 
 			                
-			                mStartTime = Calendar.getInstance().getTimeInMillis();
+			                mStartTime = Calendar.getInstance().getTimeInMillis(); // Save timestamp, to identify the click
 		        		} else { // Button cannot be moved
 		        			mMoving = false;
 		        			mCurButton = null;
@@ -327,21 +327,21 @@ public class MultiTouchListener implements OnTouchListener
 	        		int leftMargin = 0; /* Of a touched button inside the RelativeLayout */
 	        		int topMargin = 0; /* Of a touched button inside the RelativeLayout */
 	                
-	        		dX = (event.getX() - mPrevX); // dx of a button
-	                dY = (event.getY() - mPrevY); // local variable
+	        		dX = event.getX() - mPrevX; // dx of a touch-event and the touched button 
+	                dY = event.getY() - mPrevY; // local variable
 	                
-	                dX = limitDx(dX);
-	                dY = limitDy(dY);
+	                dX = limitDx(dX); // Limit dX by the width of the button
+	                dY = limitDy(dY); // Limit dX by the height of the button
 	                
 	                leftMargin = mLeft + (int) dX; // change only x if we are moving horizontally
 	                topMargin = mTop + (int) dY; // change only y if we are moving vertically
 	                
-	                int left = view.getLeft(); // get X margin of a Frame view
-	                int top = view.getTop();  // get Y margin of a Frame view
+	                //int left = view.getLeft(); // get X margin of a Frame view
+	                //int top = view.getTop();  // get Y margin of a Frame view
 	                
 	                // Make sure the button doesn't leave the Frame's borders
-	                leftMargin = leftMargin < left ? left : leftMargin;
-	                topMargin = topMargin < top ? top : topMargin;
+	                //leftMargin = leftMargin < left ? left : leftMargin;
+	                //topMargin = topMargin < top ? top : topMargin;
 	                
 	                // Update button's position
 	                MarginLayoutParams marginParams = new MarginLayoutParams(mCurButton.getWidth(), mCurButton.getHeight());
@@ -360,11 +360,9 @@ public class MultiTouchListener implements OnTouchListener
 	        case MotionEvent.ACTION_UP:
 	        	
 	        	if (mMoving == true) {
+	        		
 		        	int left = mCurButton.getLeft(); // Current position
-		        	//int startX = left;
-		        	
 		        	int top = mCurButton.getTop(); // Current position
-		        	//int startY = top;
 		        	
 		        	int dx = left - mLeft; // dx that button has traveled since ACTION_DOWN
 		        	int dy = top - mTop;   // dy that button has traveled since ACTION_DOWN
