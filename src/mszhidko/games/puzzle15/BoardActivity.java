@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -428,6 +429,29 @@ public class BoardActivity extends ActionBarActivity {
 				mMovesTB.setTextColor(0xFFCCCCCC);
 				mMovesTB.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
 				mLayout.addView(mMovesTB);
+				
+				Button newGame = new Button(getActivity());
+				RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
+						RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				buttonParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+				buttonParams.setMargins(30, 30, 30, 0);
+				newGame.setLayoutParams(buttonParams);
+				newGame.setText("New Game");
+				newGame.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						FragmentManager manager = getActivity().getSupportFragmentManager();
+						FragmentTransaction trans = manager.beginTransaction();
+						trans.remove(PlaceholderFragment.this);
+						trans.commit();
+						
+						mBoardFrag = new PlaceholderFragment();
+						manager.beginTransaction().add(R.id.container, mBoardFrag).commit();
+						manager.popBackStack();
+					}
+				});
+				mLayout.addView(newGame);
 		        
 				isUiInited = true;
 			}
