@@ -2,8 +2,8 @@ package mszhidko.games.puzzle15;
 
 import java.util.Calendar;
 
-import mszhidko.games.puzzle15.BoardActivity.PlaceholderFragment;
-import mszhidko.games.puzzle15.BoardActivity.PlaceholderFragment.Direction;
+import mszhidko.games.puzzle15.BoardActivity.PuzzleFragment;
+import mszhidko.games.puzzle15.BoardActivity.PuzzleFragment.Direction;
 import android.app.Dialog;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -25,12 +25,12 @@ public class MultiTouchListener implements OnTouchListener
 	private float mPrevY;
 	private int mLeft, mNewLeft;
 	private int mTop, mNewTop;
-	private boolean mMoving;
+	private boolean mIsMoving = false;
 	private boolean mIsSolved = false;
 	
 	// This listener is set to a PuzzleGame fragment
-	private PlaceholderFragment hostFragment;
-	private TileButton[][] mTileButtons;
+	private PuzzleFragment puzzleFragment;
+	private TileButton[][] mPuzzleButtons; // The puzzle's board is made out of an array of buttons
 	private TileButton mCurButton; // Only one button can be moved at a time
 	Direction mDirection; 		// Which direction the button can be moved
 	private long mStartTime;	// To distinguish click from move
@@ -39,10 +39,10 @@ public class MultiTouchListener implements OnTouchListener
 	// Used to detect flings
 	//private GestureDetector mGestureDetector;
 	
-	public MultiTouchListener(PlaceholderFragment boardFragment) {
+	public MultiTouchListener(PuzzleFragment boardFragment) {
 
-		hostFragment = boardFragment;
-	    mTileButtons = (TileButton[][]) hostFragment.getButtons();
+		puzzleFragment = boardFragment;
+	    mPuzzleButtons = (TileButton[][]) puzzleFragment.getButtons();
 	    
 	    /*mGestureDetector = new GestureDetector(hostFragment.getActivity(),
 				new GestureDetector.SimpleOnGestureListener() {
@@ -84,11 +84,11 @@ public class MultiTouchListener implements OnTouchListener
 	}
 	
 	private Button getTouchedButton(MotionEvent e) {
-		for (int i = 0; i < mTileButtons.length; i++) {
-			for (int j = 0; j < mTileButtons.length; j++) {
-				if (mTileButtons[i][j] != null) {
-					if (isInsideButton(e, mTileButtons[i][j])) {
-						return mTileButtons[i][j];
+		for (int i = 0; i < mPuzzleButtons.length; i++) {
+			for (int j = 0; j < mPuzzleButtons.length; j++) {
+				if (mPuzzleButtons[i][j] != null) {
+					if (isInsideButton(e, mPuzzleButtons[i][j])) {
+						return mPuzzleButtons[i][j];
 					}
 				}
 			}
@@ -99,7 +99,7 @@ public class MultiTouchListener implements OnTouchListener
 	
 	private Direction getPotentialDirection() {
 		
-		Direction d = hostFragment.getBoard().getDirection(mCurButton.getI(), mCurButton.getJ());
+		Direction d = puzzleFragment.getBoard().getDirection(mCurButton.getI(), mCurButton.getJ());
 		
 		return d;
 	
@@ -177,9 +177,9 @@ public class MultiTouchListener implements OnTouchListener
     		
     		if ((top - mTop) > mCurButton.getHeight()/6 || isClick) { // Moving tile
     			
-    			boolean ret = hostFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
+    			boolean ret = puzzleFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
     			if (ret) {
-    				hostFragment.moveForward();
+    				puzzleFragment.moveForward();
     				mCurButton.setI(mCurButton.getI() + 1);
     				mNewTop = mTop + mCurButton.getHeight() + 4;
     			} else {
@@ -199,9 +199,9 @@ public class MultiTouchListener implements OnTouchListener
     		
     		if ((mTop - top) > mCurButton.getHeight()/6 || isClick) {
 
-    			boolean ret = hostFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
+    			boolean ret = puzzleFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
     			if (ret) {
-    				hostFragment.moveForward();
+    				puzzleFragment.moveForward();
     				mCurButton.setI(mCurButton.getI() - 1);
     				mNewTop = mTop - mCurButton.getHeight() - 4;
     			} else {
@@ -220,9 +220,9 @@ public class MultiTouchListener implements OnTouchListener
     		if ((mLeft - left) > mCurButton.getWidth()/6 || isClick) {
     			
     			
-    			boolean ret = hostFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
+    			boolean ret = puzzleFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
     			if (ret) {
-    				hostFragment.moveForward();
+    				puzzleFragment.moveForward();
     				mCurButton.setJ(mCurButton.getJ() - 1);
     				mNewLeft = mLeft - mCurButton.getWidth() - 4;
     			} else {
@@ -240,9 +240,9 @@ public class MultiTouchListener implements OnTouchListener
     		
     		if ((left - mLeft) > mCurButton.getWidth()/6 || isClick){
     			
-    			boolean ret = hostFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
+    			boolean ret = puzzleFragment.getBoard().move(mCurButton.getI(), mCurButton.getJ());
     			if (ret) {
-    				hostFragment.moveForward();
+    				puzzleFragment.moveForward();
     				mCurButton.setJ(mCurButton.getJ() + 1);
     				mNewLeft = mLeft + mCurButton.getWidth() + 4;
     			} else {
@@ -302,7 +302,7 @@ public class MultiTouchListener implements OnTouchListener
 		        		mDirection = getPotentialDirection();
 		        		//Log.i("Mikhail", "Direction = " + mDirection);
 		        		if (mDirection != Direction.NONE) {
-		        			mMoving = true; // Flag that indicates that the button can be moved
+		        			mIsMoving = true; // Flag that indicates that the button can be moved
 		        			mPrevX = event.getX(); // Set original X and Y of the touch event 
 				        	mPrevY = event.getY();
 	
@@ -311,13 +311,13 @@ public class MultiTouchListener implements OnTouchListener
 			                
 			                mStartTime = Calendar.getInstance().getTimeInMillis(); // Save timestamp, to identify the click
 		        		} else { // Button cannot be moved
-		        			mMoving = false;
+		        			mIsMoving = false;
 		        			mCurButton = null;
 		        		}
 	
 		        	} else { // No button has been touched
 		        		//Log.i("Mikhail", "No button has been touched!");
-		        		mMoving = false;
+		        		mIsMoving = false;
 		        	}
 	        	}
 	        	
@@ -327,7 +327,7 @@ public class MultiTouchListener implements OnTouchListener
 	        case MotionEvent.ACTION_MOVE:
 	        {
 	        	
-	        	if (mMoving == true) {
+	        	if (mIsMoving == true) {
 	        		int leftMargin = 0; /* Of a touched button inside the RelativeLayout */
 	        		int topMargin = 0; /* Of a touched button inside the RelativeLayout */
 	                
@@ -363,7 +363,7 @@ public class MultiTouchListener implements OnTouchListener
 
 	        case MotionEvent.ACTION_UP:
 	        	
-	        	if (mMoving == true) {
+	        	if (mIsMoving == true) {
 	        		
 		        	int left = mCurButton.getLeft(); // Current position
 		        	int top = mCurButton.getTop(); // Current position
@@ -383,7 +383,7 @@ public class MultiTouchListener implements OnTouchListener
 		        	}
 		        	
 		        	moveTile(left, top, isClick); // This method will update mNewLeft & mNewTop
-		        	mIsSolved = hostFragment.getBoard().isGoal();
+		        	mIsSolved = puzzleFragment.getBoard().isGoal();
 		        	
 		        	dx = mNewLeft - left; // new dx for animation 
 		        	dy = mNewTop - top; // new dy for animation
@@ -410,11 +410,11 @@ public class MultiTouchListener implements OnTouchListener
 		                	mCurButton.setResetButton();
 		                	
 		                	if (mIsSolved) {
-		                		Toast.makeText(hostFragment.getActivity(), 
+		                		Toast.makeText(puzzleFragment.getActivity(), 
 									           "Solved!", 
 									           Toast.LENGTH_LONG).show();
 		                		
-		                		MultiTouchListener.this.hostFragment.gameOver();
+		                		MultiTouchListener.this.puzzleFragment.gameOver();
 		                		
 		                	}
 						}
@@ -427,7 +427,7 @@ public class MultiTouchListener implements OnTouchListener
 	        		animation.setFillBefore(false);
 	        		mCurButton.startAnimation(animation);
 	        		
-	                mMoving = false;
+	                mIsMoving = false;
 	        	}
 	        	
 	            break;

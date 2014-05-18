@@ -7,7 +7,7 @@ import java.util.Set;
 
 import android.util.Log;
 
-import mszhidko.games.puzzle15.BoardActivity.PlaceholderFragment.Direction;
+import mszhidko.games.puzzle15.BoardActivity.PuzzleFragment.Direction;
 
 public class Board implements Serializable {
 

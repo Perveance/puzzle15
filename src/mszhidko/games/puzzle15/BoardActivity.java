@@ -45,7 +45,7 @@ import android.widget.Toast;
 public class BoardActivity extends ActionBarActivity {
 
 	static int mDim;
-	static PlaceholderFragment mBoardFrag;
+	static PuzzleFragment mBoardFrag;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class BoardActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_board);
 		mDim = getIntent().getIntExtra(GameMenuActivity.PUZZLE_DIMENTION, 3);
 
-		mBoardFrag = new PlaceholderFragment();
+		mBoardFrag = new PuzzleFragment();
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, mBoardFrag).commit();
@@ -83,7 +83,7 @@ public class BoardActivity extends ActionBarActivity {
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
-	public static class PlaceholderFragment extends Fragment {
+	public static class PuzzleFragment extends Fragment {
 
 		private RelativeLayout mLayout;
 		private TileButton[][] mButtons;
@@ -104,7 +104,7 @@ public class BoardActivity extends ActionBarActivity {
 		private int N;
 		MultiTouchListener mTouchListener;
 		
-		public PlaceholderFragment() {
+		public PuzzleFragment() {
 
 			N = mDim;
 			//int initial_board[][] = {{6, 1, 3, 12}, {4, 2, 5, 10}, {7, 8, 0, 9 }, {1, 2, 3, 4}};
@@ -423,35 +423,54 @@ public class BoardActivity extends ActionBarActivity {
 				
 				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
 						RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-				params.setMargins(30, 30, 0, 0);
+				params.setMargins(15, 30, 0, 0);
 				mMovesTB.setLayoutParams(params);
 				mMovesTB.setText("Moves: 0");
 				mMovesTB.setTextColor(0xFFCCCCCC);
 				mMovesTB.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
 				mLayout.addView(mMovesTB);
 				
+				// New game button
 				Button newGame = new Button(getActivity());
 				RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
 						RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 				buttonParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-				buttonParams.setMargins(30, 30, 30, 0);
+				buttonParams.setMargins(15, 30, 15, 0);
 				newGame.setLayoutParams(buttonParams);
 				newGame.setText("New Game");
+				newGame.setId(0x52552552);
 				newGame.setOnClickListener(new OnClickListener() {
 					
 					@Override
 					public void onClick(View v) {
 						FragmentManager manager = getActivity().getSupportFragmentManager();
 						FragmentTransaction trans = manager.beginTransaction();
-						trans.remove(PlaceholderFragment.this);
+						trans.remove(PuzzleFragment.this);
 						trans.commit();
 						
-						mBoardFrag = new PlaceholderFragment();
+						mBoardFrag = new PuzzleFragment();
 						manager.beginTransaction().add(R.id.container, mBoardFrag).commit();
 						manager.popBackStack();
 					}
 				});
 				mLayout.addView(newGame);
+				
+				// Back button
+				Button back = new Button(getActivity());
+				RelativeLayout.LayoutParams backParams = new RelativeLayout.LayoutParams(
+						RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				backParams.addRule(RelativeLayout.LEFT_OF, 0x52552552);
+				backParams.setMargins(0, 30, 0, 0);
+				back.setLayoutParams(backParams);
+				back.setText("Back");
+				back.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						
+					}
+				});
+				mLayout.addView(back);
 		        
 				isUiInited = true;
 			}
@@ -483,10 +502,10 @@ public class BoardActivity extends ActionBarActivity {
 							
 							FragmentManager manager = getActivity().getSupportFragmentManager();
 							FragmentTransaction trans = manager.beginTransaction();
-							trans.remove(PlaceholderFragment.this);
+							trans.remove(PuzzleFragment.this);
 							trans.commit();
 							
-							mBoardFrag = new PlaceholderFragment();
+							mBoardFrag = new PuzzleFragment();
 							manager.beginTransaction().add(R.id.container, mBoardFrag).commit();
 							
 							manager.popBackStack();
