@@ -95,6 +95,10 @@ public class BoardActivity extends ActionBarActivity {
 		public Board getBoard() {
 			return mBoard;
 		}
+		
+		public void setBoard(Board newBoard) {
+			mBoard = newBoard;
+		}
 
 		protected int mBoardWidth;
 		protected int mBoardHeight;
@@ -467,7 +471,7 @@ public class BoardActivity extends ActionBarActivity {
 					
 					@Override
 					public void onClick(View v) {
-						
+						mTouchListener.back();
 					}
 				});
 				mLayout.addView(back);
@@ -477,7 +481,7 @@ public class BoardActivity extends ActionBarActivity {
 			
 		}
 		
-		protected void moveForward() {
+		protected void updateMoves() {
 			mMovesTB.setText("Moves: " + mBoard.getMoves());
 		}
 		

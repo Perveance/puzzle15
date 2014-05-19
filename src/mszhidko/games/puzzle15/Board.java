@@ -41,6 +41,29 @@ public class Board implements Serializable {
     	}
     }
     
+    public Board(Board b) {
+    	N = b.dimension();
+    	moves = b.moves;
+    	
+    	this.blocks = new int[N][N];
+    	this.blocks = new int [N][N];
+    	for (int i = 0; i < N; i++) {
+    		for (int j = 0; j < N; j++) {
+    			this.blocks[i][j] = b.get(i, j);
+    		}
+    	}
+    	
+    	coordinates = new int [N * N][2];
+    	int k = 1;
+    	for (int i = 1; i <= N; i++) {
+    		for (int j = 1; j <= N; j++) {
+    			coordinates[k - 1][0] = i;
+    			coordinates[k - 1][1] = j;
+    			k++;
+    		}
+    	}
+    }
+    
     static public int[][] generate_board(int n) {
     	
     	int initial_board[][] = new int[n][n];
