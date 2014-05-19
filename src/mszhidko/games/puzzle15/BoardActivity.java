@@ -66,6 +66,7 @@ public class BoardActivity extends ActionBarActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.board, menu);
 		return true;
+		
 	}
 
 	@Override
@@ -75,9 +76,53 @@ public class BoardActivity extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
+			Log.i("Mikhail", "Settings pressed");
+			return true;
+		} else if (id == R.id.action_exit) {
+			Log.i("Mikhail", "Exit pressed");
+			
+			exitPuzzle();
+			
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	private void exitPuzzle() {
+		
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+		 
+		// Set title
+		alertDialogBuilder.setTitle("Puzzle15");
+
+		// Set dialog message
+		alertDialogBuilder
+			.setMessage("Are you sure?")
+			.setCancelable(false)
+			.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+				
+				public void onClick(DialogInterface dialog,int id) {
+					
+					moveTaskToBack(true); 
+					finish();
+					
+				}
+			  })
+			.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+				
+				public void onClick(DialogInterface dialog,int id) {
+					
+					// Do nothing here
+					
+				}
+			});
+
+		// Create alert dialog
+		AlertDialog alertDialog = alertDialogBuilder.create();
+
+		// Show it
+		alertDialog.show();
+			
 	}
 
 	/**
@@ -166,10 +211,29 @@ public class BoardActivity extends ActionBarActivity {
 			
 			if (dim == 2) {
 				
-				initial_board[0][0] = 0;
-				initial_board[0][1] = 1;
-				initial_board[1][0] = 3;
-				initial_board[1][1] = 2;
+				int val = (int) (Math.random() * 3);
+				
+				switch (val) {
+				case 0:
+					initial_board[0][0] = 0;
+					initial_board[0][1] = 1;
+					initial_board[1][0] = 3;
+					initial_board[1][1] = 2;
+					break;
+				case 1:
+					initial_board[0][0] = 3;
+					initial_board[0][1] = 0;
+					initial_board[1][0] = 2;
+					initial_board[1][1] = 1;
+					break;
+				default:
+					initial_board[0][0] = 0;
+					initial_board[0][1] = 3;
+					initial_board[1][0] = 2;
+					initial_board[1][1] = 1;
+				}
+				
+				
 				
 				return initial_board;
 				
