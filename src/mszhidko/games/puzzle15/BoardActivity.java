@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.os.Build;
@@ -76,8 +77,12 @@ public class BoardActivity extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
+
 			Log.i("Mikhail", "Settings pressed");
-			return true;
+			Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+            
 		} else if (id == R.id.action_exit) {
 			Log.i("Mikhail", "Exit pressed");
 			
@@ -112,7 +117,7 @@ public class BoardActivity extends ActionBarActivity {
 				
 				public void onClick(DialogInterface dialog,int id) {
 					
-					// Do nothing here
+					// Cancelled by user, do nothing here
 					
 				}
 			});

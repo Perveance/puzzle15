@@ -1,0 +1,27 @@
+<resources>
+
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+    <string name="pref_title_moves_couter">Show moves counter</string>
+    <string name="pref_description_moves_counter">Show moves counter</string>
+    <string name="pref_title_display_name">User name</string>
+    <string name="pref_default_display_name">User name</string>
+    <string name="pref_title_tile_speed">Tile\'s speed</string>
+
+    <string-array name="pref_example_list_titles">
+        <item>Fast</item>
+        <item>Normal</item>
+        <item>Slow</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+</resources>
