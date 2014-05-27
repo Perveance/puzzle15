@@ -15,11 +15,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -78,6 +81,8 @@ public class BoardActivity extends ActionBarActivity {
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 
+
+			
 			Log.i("Mikhail", "Settings pressed");
 			Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
@@ -139,6 +144,8 @@ public class BoardActivity extends ActionBarActivity {
 		private TileButton[][] mButtons;
 		private Board mBoard;
 		TextView mMovesTB;
+		
+		OnSharedPreferenceChangeListener mListener;
 		
 		private final static String fileName = "TestFile.txt";
 		
@@ -491,6 +498,29 @@ public class BoardActivity extends ActionBarActivity {
 					}
 				}
 				
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+				boolean ret = prefs.getBoolean("moves_count_checkbox", true);
+				
+						
+				mListener =	new OnSharedPreferenceChangeListener() {
+					
+					@Override
+					public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+							String key) {
+
+						if (key.equals("moves_count_checkbox")) {
+							boolean v = sharedPreferences.getBoolean("moves_count_checkbox", true);
+							if (v) {
+								mMovesTB.setVisibility(View.VISIBLE);
+							} else {
+								mMovesTB.setVisibility(View.INVISIBLE);
+							}
+						}
+					}
+				};
+				
+				prefs.registerOnSharedPreferenceChangeListener(mListener);
+				
 				// Create text view with number of performed moves
 				mMovesTB = new TextView(getActivity());
 				
@@ -502,6 +532,9 @@ public class BoardActivity extends ActionBarActivity {
 				mMovesTB.setTextColor(0xFFCCCCCC);
 				mMovesTB.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
 				mLayout.addView(mMovesTB);
+				if (!ret) {
+					mMovesTB.setVisibility(View.INVISIBLE);
+				}
 				
 				// New game button
 				Button newGame = new Button(getActivity());
