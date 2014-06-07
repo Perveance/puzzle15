@@ -15,7 +15,8 @@ public class Board implements Serializable {
 	private int moves;
 	
 	private int[][] blocks;
-	private int[][] coordinates; 
+	private int[][] coordinates;
+	private int optSolMoves; // # of moves in optimal solution 
 	
 	// construct a board from an N-by-N array of blocks
     public Board(int[][] blocks) {
@@ -41,6 +42,36 @@ public class Board implements Serializable {
     	}
     }
     
+    public Board(String board) {
+  	  
+  	  board = board.trim();
+  	  
+  	  int N = Integer.valueOf(board.substring(0, 1));
+  	  board = board.substring(1);
+  	  
+  	  blocks = new int[N][N];
+  	  
+  	  board = board.replaceAll("\\n", " ");
+  	  
+  	  for (int i = 0; i < N; i++) {
+  		  for (int j = 0; j < N; j++) {
+  			  int e = 0;
+  			  
+  			  board = board.trim();
+  			  if ((i == N - 1) && (j == N - 1)) {
+  				  e = Integer.valueOf(board);
+  			  } else { 
+  				  e = Integer.valueOf(board.substring(0, board.indexOf(" ")));
+  				  board = board.substring(board.indexOf(" "));
+  			  }
+  			  
+  			  blocks[i][j] = e;
+  			  
+  		  }
+  	  }
+  	  
+    }
+    
     public Board(Board b) {
     	N = b.dimension();
     	moves = b.moves;
@@ -62,6 +93,10 @@ public class Board implements Serializable {
     			k++;
     		}
     	}
+    }
+    
+    public void setOptimalSolution(int moves) {
+  	  optSolMoves = moves;
     }
     
     static public int[][] generate_board(int n) {
