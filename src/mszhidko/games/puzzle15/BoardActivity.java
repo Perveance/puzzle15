@@ -49,6 +49,7 @@ import android.widget.Toast;
 public class BoardActivity extends ActionBarActivity {
 
 	static int mDim;
+	static Board mStartBoard;
 	static PuzzleFragment mBoardFrag;
 	
 	@Override
@@ -56,6 +57,7 @@ public class BoardActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_board);
 		mDim = getIntent().getIntExtra(GameMenuActivity.PUZZLE_DIMENTION, 3);
+		mStartBoard = (Board) getIntent().getSerializableExtra(GameMenuActivity.PUZZLE);
 
 		mBoardFrag = new PuzzleFragment();
 		if (savedInstanceState == null) {
@@ -168,13 +170,8 @@ public class BoardActivity extends ActionBarActivity {
 		public PuzzleFragment() {
 
 			N = mDim;
-			//int initial_board[][] = {{6, 1, 3, 12}, {4, 2, 5, 10}, {7, 8, 0, 9 }, {1, 2, 3, 4}};
-			int initial_board[][] = generateBoard(N);
-			if (initial_board == null) {
-				mBoard = new Board(Board.generate_board(N));
-			} else {
-				mBoard = new Board(initial_board);
-			}
+			
+			mBoard = mStartBoard;
 			
 			mButtons = new TileButton[N][N];
 			
@@ -215,146 +212,6 @@ public class BoardActivity extends ActionBarActivity {
 
 		void resetButton() { /* The button has been moved (with animation) to a new position */
 			mTouchListener.resetButton();
-		}
-		
-		int[][] generateBoard(int dim) {
-			
-			int[][] initial_board = new int[dim][dim];
-			
-			if (dim == 2) {
-				
-				int val = (int) (Math.random() * 3);
-				
-				switch (val) {
-				case 0:
-					initial_board[0][0] = 0;
-					initial_board[0][1] = 1;
-					initial_board[1][0] = 3;
-					initial_board[1][1] = 2;
-					break;
-				case 1:
-					initial_board[0][0] = 3;
-					initial_board[0][1] = 0;
-					initial_board[1][0] = 2;
-					initial_board[1][1] = 1;
-					break;
-				default:
-					initial_board[0][0] = 0;
-					initial_board[0][1] = 3;
-					initial_board[1][0] = 2;
-					initial_board[1][1] = 1;
-				}
-				
-				
-				
-				return initial_board;
-				
-			} else if (dim == 3) {
-				
-				int val = (int) (Math.random() * 5);
-				switch (val) {
-				case 0:
-					initial_board[0][0]= 1;
-					initial_board[0][1]= 2;
-					initial_board[0][2]= 3;
-					initial_board[1][0]= 4;
-					initial_board[1][1]= 5;
-					initial_board[1][2]= 6;
-					initial_board[2][0]= 7;
-					initial_board[2][1]= 0;
-					initial_board[2][2]= 8;
-					break;
-				case 1:
-					
-					//int[][] blocks1 = {{6, 7, 2}, {4, 0, 5}, {1, 8, 3}}; // 22 moves
-
-					initial_board[0][0]= 6;
-					initial_board[0][1]= 7;
-					initial_board[0][2]= 2;
-					initial_board[1][0]= 4;
-					initial_board[1][1]= 0;
-					initial_board[1][2]= 5;
-					initial_board[2][0]= 1;
-					initial_board[2][1]= 8;
-					initial_board[2][2]= 3;
-					
-					break;
-					
-				case 2:
-					//int[][] blocks2 = {{3, 6, 5}, {7, 8, 0}, {1, 4, 2}}; // 21 moves
-					
-					initial_board[0][0]= 3;
-					initial_board[0][1]= 6;
-					initial_board[0][2]= 5;
-					initial_board[1][0]= 7;
-					initial_board[1][1]= 8;
-					initial_board[1][2]= 0;
-					initial_board[2][0]= 1;
-					initial_board[2][1]= 4;
-					initial_board[2][2]= 2;
-					
-					break;
-					
-				case 3:
-					//int[][] blocks3 = {{4, 6, 2}, {5, 3, 1}, {8, 0, 7}}; // 25 moves
-					
-					initial_board[0][0]= 4;
-					initial_board[0][1]= 6;
-					initial_board[0][2]= 2;
-					initial_board[1][0]= 5;
-					initial_board[1][1]= 3;
-					initial_board[1][2]= 1;
-					initial_board[2][0]= 8;
-					initial_board[2][1]= 0;
-					initial_board[2][2]= 7;
-					
-					break;
-					
-				case 5:
-					
-					//int[][] blocks4 = {{7, 4, 5}, {8, 0, 2}, {1, 6, 3}}; // 22 moves
-					
-					initial_board[0][0]= 7;
-					initial_board[0][1]= 4;
-					initial_board[0][2]= 5;
-					initial_board[1][0]= 8;
-					initial_board[1][1]= 0;
-					initial_board[1][2]= 2;
-					initial_board[2][0]= 1;
-					initial_board[2][1]= 6;
-					initial_board[2][2]= 3;
-					
-					break;
-					
-				case 6:
-					
-					//int[][] blocks5 = {{3, 7, 4}, {6, 0, 1}, {8, 2, 5}}; // 24 moves
-					
-					initial_board[0][0]= 3;
-					initial_board[0][1]= 7;
-					initial_board[0][2]= 4;
-					initial_board[1][0]= 6;
-					initial_board[1][1]= 0;
-					initial_board[1][2]= 1;
-					initial_board[2][0]= 8;
-					initial_board[2][1]= 2;
-					initial_board[2][2]= 5;
-					
-					break;
-					
-				default:
-					
-					return null;
-						
-				}
-				
-				return initial_board;
-				
-			} else if (dim == 4) {
-				return null;
-			} else {
-				return null;
-			}
 		}
 		
 		@Override
@@ -528,7 +385,7 @@ public class BoardActivity extends ActionBarActivity {
 						RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 				params.setMargins(15, 30, 0, 0);
 				mMovesTB.setLayoutParams(params);
-				mMovesTB.setText("Moves: 0");
+				mMovesTB.setText("Moves: 0/" + mBoard.getOptimalSolutionMoves());
 				mMovesTB.setTextColor(0xFFCCCCCC);
 				mMovesTB.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
 				mLayout.addView(mMovesTB);
@@ -584,7 +441,7 @@ public class BoardActivity extends ActionBarActivity {
 		}
 		
 		protected void updateMoves() {
-			mMovesTB.setText("Moves: " + mBoard.getMoves());
+			mMovesTB.setText("Moves: " + mBoard.getMoves() + "/"+ mBoard.getOptimalSolutionMoves());
 		}
 		
 		public Button[][] getButtons() {

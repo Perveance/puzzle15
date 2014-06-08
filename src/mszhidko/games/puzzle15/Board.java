@@ -46,7 +46,7 @@ public class Board implements Serializable {
   	  
   	  board = board.trim();
   	  
-  	  int N = Integer.valueOf(board.substring(0, 1));
+  	  N = Integer.valueOf(board.substring(0, 1));
   	  board = board.substring(1);
   	  
   	  blocks = new int[N][N];
@@ -97,6 +97,10 @@ public class Board implements Serializable {
     
     public void setOptimalSolution(int moves) {
   	  optSolMoves = moves;
+    }
+    
+    public int getOptimalSolutionMoves() {
+    	return optSolMoves;
     }
     
     static public int[][] generate_board(int n) {
