@@ -75,6 +75,7 @@ public class Board implements Serializable {
     public Board(Board b) {
     	N = b.dimension();
     	moves = b.moves;
+    	optSolMoves = b.getOptimalSolutionMoves();
     	
     	this.blocks = new int[N][N];
     	this.blocks = new int [N][N];

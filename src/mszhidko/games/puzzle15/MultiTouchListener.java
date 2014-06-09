@@ -36,7 +36,6 @@ public class MultiTouchListener implements OnTouchListener
 	private TileButton mCurButton; // Only one button can be moved at a time
 	Direction mDirection; 		// Which direction the button can be moved
 	private long mStartTime;	// To distinguish click from move
-	final int ANIMATION_SPEED = 60;
 	private ArrayDeque<Board> mHistory = new ArrayDeque<Board>();
 	
 	// Used to detect flings
@@ -46,22 +45,6 @@ public class MultiTouchListener implements OnTouchListener
 
 		puzzleFragment = boardFragment;
 	    mPuzzleButtons = (TileButton[][]) puzzleFragment.getButtons();
-	    
-	    /*mGestureDetector = new GestureDetector(hostFragment.getActivity(),
-				new GestureDetector.SimpleOnGestureListener() {
-					@Override
-					public boolean onFling(MotionEvent e1, MotionEvent e2,
-							float velocityX, float velocityY) {
-						
-						//
-						// TODO: implement proper swipe detection and handling
-						//
-						
-						
-						Log.i("Mikhail", "    <<< GestureDetector: onFling! >>>");
-						return false;
-					}
-				});*/
 	    
 	}
 	
@@ -456,7 +439,7 @@ public class MultiTouchListener implements OnTouchListener
 	private int calcButtonSpeed(TileButton b, int dx, int dy) {
 		
 		int distance = (Math.abs(dx) > Math.abs(dy)) ? Math.abs(dx) : Math.abs(dy);
-		int speed = b.getWidth() / ANIMATION_SPEED;
+		int speed = b.getWidth() / puzzleFragment.getTileSpeed();
 		int duration = distance / speed;
 		
 		return duration;
@@ -559,7 +542,7 @@ public class MultiTouchListener implements OnTouchListener
 					
 					int[] tag_tmp = new int[2];
 					tag_tmp = (int []) mPuzzleButtons[i][j].getTag();
-					//if (tag_.equals(tag)) {
+					
 					if ((tag_tmp[0] == tag[0]) && (tag_tmp[1] == tag[1])) {
 						return mPuzzleButtons[i][j];
 					}

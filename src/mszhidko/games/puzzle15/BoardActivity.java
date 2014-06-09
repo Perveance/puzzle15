@@ -166,7 +166,36 @@ public class BoardActivity extends ActionBarActivity {
 		private boolean isUiInited;
 		private int N;
 		MultiTouchListener mTouchListener;
+		private int mTileSpeed = 0;
 		
+		public int getTileSpeed() {
+			
+			if (mTileSpeed == 0) {
+				
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+				String ret = prefs.getString("tile_speed_list", "Normal");
+				setTileSpeed(ret);
+				Log.i("Mikhail", "speed = " + ret);
+				
+			}
+			
+			return mTileSpeed;
+		}
+
+		public void setTileSpeed(String speed) {
+			
+			if (speed.equals("-1")) {
+				mTileSpeed = 180;
+			} else if (speed.equals("0")) {
+				mTileSpeed = 120;
+			} else if (speed.equals("1")) {
+				mTileSpeed = 60;
+			} else {
+				mTileSpeed = 60;	
+			}
+			
+		}
+
 		public PuzzleFragment() {
 
 			N = mDim;
@@ -218,7 +247,6 @@ public class BoardActivity extends ActionBarActivity {
 	    public void onAttach(Activity activity) {
 	        
 			super.onAttach(activity);
-	        //test_serializable(activity);
 	        
 	    }
 		
@@ -372,6 +400,12 @@ public class BoardActivity extends ActionBarActivity {
 							} else {
 								mMovesTB.setVisibility(View.INVISIBLE);
 							}
+						} else if (key.equals("tile_speed_list")) {
+							
+							String speed = sharedPreferences.getString("tile_speed_list", "1");
+							setTileSpeed(speed);
+							Log.i("Mikhail", "Speed has changed to " + speed);
+							
 						}
 					}
 				};
