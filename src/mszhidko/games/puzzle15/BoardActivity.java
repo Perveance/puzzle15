@@ -435,19 +435,21 @@ public class BoardActivity extends ActionBarActivity {
 				buttonParams.setMargins(15, 30, 15, 0);
 				newGame.setLayoutParams(buttonParams);
 				newGame.setText("New Game");
-				newGame.setId(0x52552552);
+				newGame.setId(0x52552552); // TODO: make proper ID for the button
 				newGame.setOnClickListener(new OnClickListener() {
 					
 					@Override
 					public void onClick(View v) {
-						FragmentManager manager = getActivity().getSupportFragmentManager();
+						
+						/*FragmentManager manager = getActivity().getSupportFragmentManager();
 						FragmentTransaction trans = manager.beginTransaction();
 						trans.remove(PuzzleFragment.this);
 						trans.commit();
 						
 						mBoardFrag = new PuzzleFragment();
 						manager.beginTransaction().add(R.id.container, mBoardFrag).commit();
-						manager.popBackStack();
+						manager.popBackStack();*/
+						getActivity().finish(); // Just finish BoardActivity and return back to Game menu
 					}
 				});
 				mLayout.addView(newGame);
@@ -456,7 +458,7 @@ public class BoardActivity extends ActionBarActivity {
 				Button back = new Button(getActivity());
 				RelativeLayout.LayoutParams backParams = new RelativeLayout.LayoutParams(
 						RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-				backParams.addRule(RelativeLayout.LEFT_OF, 0x52552552);
+				backParams.addRule(RelativeLayout.LEFT_OF, 0x52552552); // TODO: remove this hardcoding
 				backParams.setMargins(0, 30, 0, 0);
 				back.setLayoutParams(backParams);
 				back.setText("Back");
