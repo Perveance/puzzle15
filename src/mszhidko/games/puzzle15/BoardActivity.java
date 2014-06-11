@@ -198,9 +198,11 @@ public class BoardActivity extends ActionBarActivity {
 
 		public PuzzleFragment() {
 
+			//int[][] tiles = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 0}}; 
 			N = mDim;
 			
 			mBoard = mStartBoard;
+			//mBoard = new Board(tiles);
 			
 			mButtons = new TileButton[N][N];
 			
@@ -249,59 +251,6 @@ public class BoardActivity extends ActionBarActivity {
 			super.onAttach(activity);
 	        
 	    }
-		
-		void test_serializable(Activity a) {
-			int b1[][] = {{1, 2, 3}, {4, 5, 6}, {7, 0, 8}};
-			int b2[][] = {{3, 3, 3}, {4, 5, 6}, {7, 0, 8}};
-			ArrayList<Board> l  = new ArrayList<Board>();
-			//l.add(new Board(b1));
-			//l.add(new Board(b2));
-			
-			/*
-			try {
-				
-				//FileOutputStream fos = a.openFileOutput(fileName, MODE_PRIVATE);
-				getResources().getAssets().open("Boards3x3.pzl", MODE_PRIVATE);
-				//FileOutputStream fos = a.openFileOutput(, MODE_PRIVATE);
-				ObjectOutputStream os = new ObjectOutputStream(fos);
-			
-				os.writeObject(l);
-				os.close();
-				fos.close();
-				
-				Log.i("Mikhail", "WRITE: success");
-				
-			} catch (IOException e) {
-				Log.i("Mikhail", "WRITE: error");
-			}*/
-			
-			try {
-				
-				//InputStream stream = a.getAssets().open("puzzles/Boards3x3.pzl");
-				AssetManager am = getResources().getAssets();
-				//AssetFileDescriptor descriptor = am.openFd("puzzles/Boards3x3.pzl");
-				InputStream fis = am.open("puzzles/Boards3x3.pzl", MODE_PRIVATE);
-				//FileInputStream fis = a.openFileInput(fileName);
-				ObjectInputStream is = new ObjectInputStream(fis);
-				l = (ArrayList<Board>) is.readObject();
-				
-				for (Board b : l) {
-					Log.i("Mikhail", "1");
-				}
-				
-				is.close();
-			
-			} catch (IOException e) {
-				
-				Log.i("Mikhail", "READ: error");
-				
-			} catch (ClassNotFoundException e) {
-				
-				Log.i("Mikhail", "READ: ClassNotFound error");
-				
-			}
-			
-		}
 		
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -357,7 +306,8 @@ public class BoardActivity extends ActionBarActivity {
 				
 				int textSize =  160 / N;
 				mBoardLeft = v.getLeft();
-				mBoardTop = v.getTop() + infoPanelHeight; // Offset the buttons 
+				mBoardTop = v.getTop() + infoPanelHeight; // Offset the buttons
+				mLayout.setBackgroundColor(0xFFC7D6FF);
 				
 				for (int i = 0; i < N; i++) {
 					for (int j = 0; j < N; j++) {
@@ -370,8 +320,9 @@ public class BoardActivity extends ActionBarActivity {
 						int[] tag = {i, j}; // Button's tag is the row, column in Board's class
 						mButtons[i][j].setTag(tag);
 						mButtons[i][j].setText(String.valueOf(mBoard.get(i, j)));
+						mButtons[i][j].setTextColor(0xFFFFFFFF);
 						mButtons[i][j].setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
-						mButtons[i][j].setBackgroundColor(0xAAFFB10B);
+						mButtons[i][j].setBackgroundColor(0xFF338C00);
 						
 						MarginLayoutParams marginParams = new MarginLayoutParams(buttonWidth - 4, buttonHeight - 4);
 		                marginParams.setMargins(mBoardLeft + j * buttonWidth, mBoardTop + i * buttonHeight, 0, 0);
@@ -420,7 +371,8 @@ public class BoardActivity extends ActionBarActivity {
 				params.setMargins(15, 30, 0, 0);
 				mMovesTB.setLayoutParams(params);
 				mMovesTB.setText("Moves: 0/" + mBoard.getOptimalSolutionMoves());
-				mMovesTB.setTextColor(0xFFCCCCCC);
+				mMovesTB.setTextColor(0xFF000000);
+				mMovesTB.setBackgroundColor(0xFFFFFFFF);
 				mMovesTB.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
 				mLayout.addView(mMovesTB);
 				if (!ret) {
@@ -436,6 +388,7 @@ public class BoardActivity extends ActionBarActivity {
 				newGame.setLayoutParams(buttonParams);
 				newGame.setText("New Game");
 				newGame.setId(0x52552552); // TODO: make proper ID for the button
+				newGame.setBackgroundResource(R.layout.custom_button);
 				newGame.setOnClickListener(new OnClickListener() {
 					
 					@Override
@@ -462,6 +415,7 @@ public class BoardActivity extends ActionBarActivity {
 				backParams.setMargins(0, 30, 0, 0);
 				back.setLayoutParams(backParams);
 				back.setText("Back");
+				back.setBackgroundResource(R.layout.custom_button);
 				back.setOnClickListener(new OnClickListener() {
 					
 					@Override
@@ -499,6 +453,7 @@ public class BoardActivity extends ActionBarActivity {
 						
 						public void onClick(DialogInterface dialog,int id) {
 							
+							/*
 							FragmentManager manager = getActivity().getSupportFragmentManager();
 							FragmentTransaction trans = manager.beginTransaction();
 							trans.remove(PuzzleFragment.this);
@@ -508,6 +463,8 @@ public class BoardActivity extends ActionBarActivity {
 							manager.beginTransaction().add(R.id.container, mBoardFrag).commit();
 							
 							manager.popBackStack();
+							*/
+							getActivity().finish();
 						}
 					  })
 					.setNegativeButton("Exit",new DialogInterface.OnClickListener() {
