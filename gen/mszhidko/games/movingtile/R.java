@@ -1084,6 +1084,9 @@ containing a value of this type.
         public static final int ic_launcher=0x7f020057;
     }
     public static final class id {
+        public static final int AboutButton=0x7f060043;
+        public static final int AboutPuzzleTB=0x7f06003c;
+        public static final int SettingsButton=0x7f060044;
         public static final int action_bar=0x7f06001c;
         public static final int action_bar_activity_content=0x7f060015;
         public static final int action_bar_container=0x7f06001b;
@@ -1092,28 +1095,27 @@ containing a value of this type.
         public static final int action_bar_subtitle=0x7f060023;
         public static final int action_bar_title=0x7f060022;
         public static final int action_context_bar=0x7f06001d;
-        public static final int action_exit=0x7f060045;
+        public static final int action_exit=0x7f060047;
         public static final int action_menu_divider=0x7f060016;
         public static final int action_menu_presenter=0x7f060017;
         public static final int action_mode_close_button=0x7f060024;
-        public static final int action_settings=0x7f060044;
+        public static final int action_settings=0x7f060046;
         public static final int activity_chooser_view_content=0x7f060025;
         public static final int always=0x7f06000b;
         public static final int beginning=0x7f060011;
-        public static final int boardFragment=0x7f06003d;
+        public static final int boardFragment=0x7f06003e;
         public static final int checkbox=0x7f06002d;
         public static final int collapseActionView=0x7f06000d;
-        public static final int container=0x7f06003c;
-        public static final int customPuzzleButton=0x7f060042;
+        public static final int container=0x7f06003d;
         public static final int default_activity_button=0x7f060028;
         public static final int dialog=0x7f06000e;
-        public static final int difficultPuzzleButton=0x7f060040;
+        public static final int difficultPuzzleButton=0x7f060041;
         public static final int disableHome=0x7f060008;
         public static final int dropdown=0x7f06000f;
-        public static final int easyPuzzleButton=0x7f06003e;
+        public static final int easyPuzzleButton=0x7f06003f;
         public static final int edit_query=0x7f060030;
         public static final int end=0x7f060013;
-        public static final int exitButton=0x7f060043;
+        public static final int exitButton=0x7f060045;
         public static final int expand_activities_button=0x7f060026;
         public static final int expanded_menu=0x7f06002c;
         public static final int home=0x7f060014;
@@ -1127,7 +1129,7 @@ containing a value of this type.
         public static final int never=0x7f060009;
         public static final int none=0x7f060010;
         public static final int normal=0x7f060000;
-        public static final int normalPuzzleButton=0x7f06003f;
+        public static final int normalPuzzleButton=0x7f060040;
         public static final int progress_circular=0x7f060018;
         public static final int progress_horizontal=0x7f060019;
         public static final int radio=0x7f06002f;
@@ -1152,7 +1154,7 @@ containing a value of this type.
         public static final int top_action_bar=0x7f060020;
         public static final int up=0x7f060021;
         public static final int useLogo=0x7f060003;
-        public static final int veryDifPuzzleButton=0x7f060041;
+        public static final int veryDifPuzzleButton=0x7f060042;
         public static final int withText=0x7f06000c;
     }
     public static final class integer {
@@ -1205,11 +1207,12 @@ containing a value of this type.
         public static final int abc_search_dropdown_item_icons_2line=0x7f030015;
         public static final int abc_search_view=0x7f030016;
         public static final int abc_simple_decor=0x7f030017;
-        public static final int activity_board=0x7f030018;
-        public static final int custom_button=0x7f030019;
-        public static final int fragment_board=0x7f03001a;
-        public static final int game_menu=0x7f03001b;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001c;
+        public static final int about_screen=0x7f030018;
+        public static final int activity_board=0x7f030019;
+        public static final int custom_button=0x7f03001a;
+        public static final int fragment_board=0x7f03001b;
+        public static final int game_menu=0x7f03001c;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001d;
     }
     public static final class menu {
         public static final int board=0x7f0e0000;
@@ -1255,28 +1258,31 @@ containing a value of this type.
         /**  Description of a share target (both in the list of such or the default share button) in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
          */
         public static final int abc_shareactionprovider_share_with_application=0x7f0b000b;
+        public static final int about_button=0x7f0b0017;
+        public static final int about_puzzle15=0x7f0b001c;
         public static final int action_exit=0x7f0b0010;
         public static final int action_settings=0x7f0b000f;
         public static final int app_name=0x7f0b000d;
         public static final int custom_puzzle_button=0x7f0b0015;
         public static final int difficult_puzzle_button=0x7f0b0013;
         public static final int easy_puzzle_button=0x7f0b0011;
-        public static final int exit=0x7f0b0018;
+        public static final int exit=0x7f0b001a;
         public static final int exit_button=0x7f0b0016;
-        public static final int game_over=0x7f0b0017;
+        public static final int game_over=0x7f0b0019;
         public static final int hello_world=0x7f0b000e;
-        public static final int new_game=0x7f0b0019;
+        public static final int new_game=0x7f0b001b;
         public static final int normal_puzzle_button=0x7f0b0012;
-        public static final int pref_default_display_name=0x7f0b001f;
-        public static final int pref_description_moves_counter=0x7f0b001d;
+        public static final int pref_default_display_name=0x7f0b0022;
+        public static final int pref_description_moves_counter=0x7f0b0020;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f0b001b;
-        public static final int pref_title_display_name=0x7f0b001e;
-        public static final int pref_title_moves_couter=0x7f0b001c;
-        public static final int pref_title_tile_speed=0x7f0b0020;
-        public static final int title_activity_settings=0x7f0b001a;
+        public static final int pref_header_general=0x7f0b001e;
+        public static final int pref_title_display_name=0x7f0b0021;
+        public static final int pref_title_moves_couter=0x7f0b001f;
+        public static final int pref_title_tile_speed=0x7f0b0023;
+        public static final int settings_button=0x7f0b0018;
+        public static final int title_activity_settings=0x7f0b001d;
         public static final int very_difficult_puzzle_button=0x7f0b0014;
     }
     public static final class style {

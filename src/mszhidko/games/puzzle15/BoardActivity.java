@@ -83,8 +83,6 @@ public class BoardActivity extends ActionBarActivity {
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 
-
-			
 			Log.i("Mikhail", "Settings pressed");
 			Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
@@ -296,6 +294,7 @@ public class BoardActivity extends ActionBarActivity {
 				View v = this.getView();
 				mBoardHeight = v.getMeasuredHeight();
 		        mBoardWidth = v.getMeasuredWidth();
+		        mBoardHeight = mBoardWidth;
 		        Log.i("Mikhail", "initializeUI; mBoardHeight=" + mBoardHeight + "; mBoardWidth=" + mBoardWidth);
 		        
 		        int infoPanelHeight = (int) (0.15 * (double) mBoardHeight); // Height of the panel where we show number of performed moves
@@ -306,7 +305,7 @@ public class BoardActivity extends ActionBarActivity {
 				
 				int textSize =  160 / N;
 				mBoardLeft = v.getLeft();
-				mBoardTop = v.getTop() + infoPanelHeight; // Offset the buttons
+				mBoardTop = v.getTop() + infoPanelHeight + 100; // Offset the buttons
 				mLayout.setBackgroundColor(0xFFC7D6FF);
 				
 				for (int i = 0; i < N; i++) {
@@ -373,7 +372,7 @@ public class BoardActivity extends ActionBarActivity {
 				mMovesTB.setText("Moves: 0/" + mBoard.getOptimalSolutionMoves());
 				mMovesTB.setTextColor(0xFF000000);
 				mMovesTB.setBackgroundColor(0xFFFFFFFF);
-				mMovesTB.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
+				mMovesTB.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 				mLayout.addView(mMovesTB);
 				if (!ret) {
 					mMovesTB.setVisibility(View.INVISIBLE);

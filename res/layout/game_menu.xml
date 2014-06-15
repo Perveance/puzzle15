@@ -52,16 +52,28 @@
         android:layout_weight="1"/>
     
     <Button
-        android:id="@+id/customPuzzleButton"
+        android:id="@+id/AboutButton"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
         android:layout_marginTop="2dp"
-        android:text="@string/custom_puzzle_button"
+        android:text="@string/about_button"
         android:background="@layout/custom_button"
-        android:visibility="invisible"
-        android:layout_weight="1"  />
+        android:onClick="onAbout"
+        android:layout_weight="1"/>
+    
+    <Button
+        android:id="@+id/SettingsButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="2dp"
+        android:text="@string/settings_button"
+        android:background="@layout/custom_button"
+        android:onClick="onSettings"
+        android:layout_weight="1"/>
     
     <Button
         android:id="@+id/exitButton"
@@ -73,6 +85,7 @@
         android:layout_marginBottom="100dp"
         android:text="@string/exit_button"
         android:background="@layout/custom_button"
+        android:onClick="onExit"
         android:layout_weight="1"  />
     
 

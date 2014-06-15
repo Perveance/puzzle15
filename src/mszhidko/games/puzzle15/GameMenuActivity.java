@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -108,18 +107,7 @@ public class GameMenuActivity extends Activity {
 			}
 		});
 		
-		Button exit = (Button) findViewById(R.id.exitButton);
 		
-		exit.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-				Log.i("Mikhail", "onClick: calling finish()");
-				finish();
-				
-			}
-		});
 		
 		
 		// Read boards. This should be done in background thread
@@ -180,6 +168,28 @@ public class GameMenuActivity extends Activity {
 			Log.i("Mikhail", "JSON exception");
 			
 		}
+	}
+	
+	public void onAbout(View v) {
+		
+		Log.i("Mikhail", "About button pressed");
+		Intent i = new Intent(this, AboutActivity.class);
+		startActivity(i);
+		
+	}
+	
+	public void onSettings(View v) {
+		
+		Log.i("Mikhail", "Settings button pressed");
+		
+		Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+        
+		
+	}
+	
+	public void onExit(View v) {
+				finish();
 	}
 
 }

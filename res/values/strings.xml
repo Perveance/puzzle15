@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MovingTile</string>
+    <string name="app_name">Puzzle 15</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="action_exit">Exit</string>
@@ -11,7 +11,24 @@
     <string name="very_difficult_puzzle_button">Very difficult 5x5</string>
     <string name="custom_puzzle_button">Custom puzzle</string>
     <string name="exit_button">Exit</string>
+    <string name="about_button">About</string>
+    <string name="settings_button">Settings</string>
     <string name="game_over">Game over!</string>
     <string name="exit">Exit</string>
     <string name="new_game">New game</string>
+    <string name="about_puzzle15"> The 15-puzzle (also called Gem Puzzle, Boss Puzzle, Game of Fifteen, Mystic Square and many others) is a sliding puzzle that consists of a frame of numbered square tiles in random order with one tile missing. The puzzle also exists in other sizes, particularly the smaller 8-puzzle. If the size is 3×3 tiles, the puzzle is called the 8-puzzle or 9-puzzle, and if 4×4 tiles, the puzzle is called the 15-puzzle or 16-puzzle named, respectively, for the number of tiles and the number of spaces.\n\n 
+        							<b>The object of the puzzle is to place the tiles in order (see diagram) by making sliding moves that use the empty space.</b>\n\n
+        							
+        							<b>History</b>\n\n
+        							The puzzle was "invented" by Noyes Palmer Chapman, a postmaster in Canastota, New York, who is said to have shown friends, as early as 1874, a precursor puzzle consisting of 16 numbered blocks that were to be put together in rows of four, each summing to 34. Copies of the improved Fifteen Puzzle made their way to Syracuse, New York by way of Noyes\' son, Frank, and from there, via sundry connections, to Watch Hill, RI, and finally to Hartford (Connecticut), where students in the American School for the Deaf started manufacturing the puzzle and, by December 1879, selling them both locally and in Boston, Massachusetts. Shown one of these, Matthias Rice, who ran a fancy woodworking business in Boston, started manufacturing the puzzle sometime in December 1879 and convinced a "Yankee Notions" fancy goods dealer to sell them under the name of "Gem Puzzle". In late-January 1880, Dr. Charles Pevey, a dentist in Worcester, Massachusetts, garnered some attention by offering a cash reward for a solution to the Fifteen Puzzle.\n\n
+									The game became a craze in the U.S. in February 1880, Canada in March, Europe in April, but that craze had pretty much dissipated by July. Apparently the puzzle was not introduced to Japan until 1889.\n\n
+									Noyes Chapman had applied for a patent on his "Block Solitaire Puzzle" on February 21, 1880. However, that patent was rejected, likely because it was not sufficiently different from the August 20, 1878 "Puzzle-Blocks" patent (US 207124) granted to Ernest U. Kinsey.\n\n
+									
+									source: http://en.wikipedia.org/wiki/15_puzzle \n\n
+
+
+        							</string>
+    
+    
+    
 </resources>
