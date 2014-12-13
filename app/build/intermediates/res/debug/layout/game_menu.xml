@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#AEC8F5"
+    android:gravity="center" >
+    
+    <Button
+        android:id="@+id/easyPuzzleButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="100dp"
+        android:text="@string/easy_puzzle_button"
+        android:background="@layout/custom_button"
+        android:layout_weight="1" 
+        />
+    
+    <Button
+        android:id="@+id/normalPuzzleButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="2dp"
+        android:text="@string/normal_puzzle_button"
+        android:background="@layout/custom_button"
+        android:layout_weight="1"/>
+    
+    <Button
+        android:id="@+id/difficultPuzzleButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="2dp"
+        android:text="@string/difficult_puzzle_button"
+        android:background="@layout/custom_button" 
+        android:layout_weight="1" />
+    
+    <Button
+        android:id="@+id/veryDifPuzzleButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="2dp"
+        android:text="@string/very_difficult_puzzle_button"
+        android:background="@layout/custom_button"
+        android:layout_weight="1"/>
+    
+    <Button
+        android:id="@+id/AboutButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="2dp"
+        android:text="@string/about_button"
+        android:background="@layout/custom_button"
+        android:onClick="onAbout"
+        android:layout_weight="1"/>
+    
+    <Button
+        android:id="@+id/SettingsButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="2dp"
+        android:text="@string/settings_button"
+        android:background="@layout/custom_button"
+        android:onClick="onSettings"
+        android:layout_weight="1"/>
+    
+    <Button
+        android:id="@+id/exitButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="100dp"
+        android:text="@string/exit_button"
+        android:background="@layout/custom_button"
+        android:onClick="onExit"
+        android:layout_weight="1"  />
+    
+
+</LinearLayout>
+<!-- From: file:/Users/mikhail/AndroidstudioProjects/Puzzle15/app/src/main/res/layout/game_menu.xml -->
