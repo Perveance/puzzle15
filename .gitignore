@@ -11,7 +11,7 @@
 # generated files
 bin/
 gen/
-app/build/generated
+app/build/
 
 # Local configuration file (sdk path, etc)
 local.properties
