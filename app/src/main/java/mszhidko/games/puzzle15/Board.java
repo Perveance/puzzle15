@@ -11,17 +11,19 @@ import mszhidko.games.puzzle15.BoardActivity.PuzzleFragment.Direction;
 
 public class Board implements Serializable {
 
-	private int N;
+
+
+    private long mId;
+    private int N;
 	private int moves;
-	
 	private int[][] blocks;
 	private int[][] coordinates;
 	private int optSolMoves; // # of moves in optimal solution 
 	
 	// construct a board from an N-by-N array of blocks
     public Board(int[][] blocks) {
+        mId = -1;
         // (where blocks[i][j] = block in row i, column j)
-    	
     	N = blocks.length;
     	
     	this.blocks = new int [N][N];
@@ -41,7 +43,15 @@ public class Board implements Serializable {
     		}
     	}
     }
-    
+
+    public long getId() {
+        return mId;
+    }
+
+    public void setId(long id) {
+        mId = id;
+    }
+
     public Board(String board) {
   	  
   	  board = board.trim();

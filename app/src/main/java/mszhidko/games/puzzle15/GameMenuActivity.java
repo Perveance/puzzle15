@@ -12,6 +12,8 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import mszhidko.games.movingtile.R;
+import mszhidko.games.puzzle15.db.PuzzleDatabaseHelper;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -30,6 +32,8 @@ public class GameMenuActivity extends Activity {
 	private ArrayList<Board> board3l = new ArrayList<Board>();
 	private ArrayList<Board> board4l = new ArrayList<Board>();
 	private ArrayList<Board> board5l = new ArrayList<Board>();
+
+    private PuzzleDatabaseHelper mHelper;
 
 	public void onCreate(Bundle savedInstanceState) {
 		
@@ -64,8 +68,9 @@ public class GameMenuActivity extends Activity {
 				Intent puzzleIntent = new Intent(GameMenuActivity.this,	BoardActivity.class);
 				
 				puzzleIntent.putExtra(PUZZLE_DIMENTION, 3);
-				int ind = (int) (Math.random() * board3l.size());
-				puzzleIntent.putExtra(PUZZLE, board3l.get(ind));
+				//int ind = (int) (Math.random() * board3l.size());
+                Board b = testLoadBoard();
+				puzzleIntent.putExtra(PUZZLE, b);
 				
 				startActivity(puzzleIntent);
 				
@@ -106,10 +111,7 @@ public class GameMenuActivity extends Activity {
 				
 			}
 		});
-		
-		
-		
-		
+
 		// Read boards. This should be done in background thread
 		BufferedReader reader = null;
 		
@@ -168,6 +170,10 @@ public class GameMenuActivity extends Activity {
 			Log.i("Mikhail", "JSON exception");
 			
 		}
+
+        mHelper = new PuzzleDatabaseHelper(getApplicationContext());
+        testStoreBoards();
+        testLoadBoard();
 	}
 	
 	public void onAbout(View v) {
@@ -184,7 +190,6 @@ public class GameMenuActivity extends Activity {
 		
 		Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
-        
 		
 	}
 	
@@ -192,4 +197,23 @@ public class GameMenuActivity extends Activity {
 				finish();
 	}
 
+    void testStoreBoards() {
+
+        int[][] blocks = {{1, 2, 3}, {4, 5, 6}, {7, 0, 8}};
+        Board b = new Board(blocks);
+        Solution s = new Solution(b);
+
+        long sId = mHelper.insertSolution(s);
+        Log.i("Mikhail", "solutionId = " + sId);
+
+        long bId = mHelper.insertPuzzle(b, sId);
+        Log.i("Mikhail", "boardId = " + bId);
+    }
+
+    Board testLoadBoard() {
+        PuzzleDatabaseHelper.PuzzleCursor pc = mHelper.queryPuzzle();
+        pc.moveToFirst();
+        Board b = pc.getPuzzle();
+        return b;
+    }
 }
