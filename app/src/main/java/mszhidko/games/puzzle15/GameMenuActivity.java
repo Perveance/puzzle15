@@ -28,10 +28,10 @@ public class GameMenuActivity extends Activity {
 	public static final String  PUZZLE_DIMENTION = "mszhidko.games.puzzle15.puzzle_dimention";
 	public static final String  PUZZLE = "mszhidko.games.puzzle15.puzzle";
 	
-	private ArrayList<Board> board2l = new ArrayList<Board>();
-	private ArrayList<Board> board3l = new ArrayList<Board>();
-	private ArrayList<Board> board4l = new ArrayList<Board>();
-	private ArrayList<Board> board5l = new ArrayList<Board>();
+	private ArrayList<Board> board2l = new ArrayList<>();
+	private ArrayList<Board> board3l = new ArrayList<>();
+	private ArrayList<Board> board4l = new ArrayList<>();
+	private ArrayList<Board> board5l = new ArrayList<>();
 
     private PuzzleDatabaseHelper mHelper;
 
@@ -49,10 +49,8 @@ public class GameMenuActivity extends Activity {
 				Intent puzzleIntent = new Intent(GameMenuActivity.this,	BoardActivity.class);
 				
 				puzzleIntent.putExtra(PUZZLE_DIMENTION, 2);
-				
-				int ind = (int) (Math.random() * board2l.size());
-				Log.i("Mikhail", "Length = " + board2l.size());
-				puzzleIntent.putExtra(PUZZLE, board2l.get(ind));
+                Puzzle p = loadPuzzle(2);
+				puzzleIntent.putExtra(PUZZLE, p.getStartBoard());
 				
 				startActivity(puzzleIntent);
 				
@@ -69,8 +67,8 @@ public class GameMenuActivity extends Activity {
 				
 				puzzleIntent.putExtra(PUZZLE_DIMENTION, 3);
 				//int ind = (int) (Math.random() * board3l.size());
-                Board b = testLoadBoard();
-				puzzleIntent.putExtra(PUZZLE, b);
+                Puzzle p = loadPuzzle(3);
+				puzzleIntent.putExtra(PUZZLE, p.getStartBoard());
 				
 				startActivity(puzzleIntent);
 				
@@ -86,8 +84,8 @@ public class GameMenuActivity extends Activity {
 				Intent puzzleIntent = new Intent(GameMenuActivity.this,	BoardActivity.class);
 				
 				puzzleIntent.putExtra(PUZZLE_DIMENTION, 4);
-				int ind = (int) (Math.random() * board4l.size());
-				puzzleIntent.putExtra(PUZZLE, board4l.get(ind));
+                Puzzle p = loadPuzzle(4);
+				puzzleIntent.putExtra(PUZZLE, p.getStartBoard());
 				
 				startActivity(puzzleIntent);
 				
@@ -104,8 +102,8 @@ public class GameMenuActivity extends Activity {
 				Intent puzzleIntent = new Intent(GameMenuActivity.this,	BoardActivity.class);
 				
 				puzzleIntent.putExtra(PUZZLE_DIMENTION, 5);
-				int ind = (int) (Math.random() * board5l.size());
-				puzzleIntent.putExtra(PUZZLE, board5l.get(ind));
+                Puzzle p = loadPuzzle(5);
+				puzzleIntent.putExtra(PUZZLE, p.getStartBoard());
 				
 				startActivity(puzzleIntent);
 				
@@ -172,8 +170,7 @@ public class GameMenuActivity extends Activity {
 		}
 
         mHelper = new PuzzleDatabaseHelper(getApplicationContext());
-        testStoreBoards();
-        testLoadBoard();
+        mHelper.createDataBase();
 	}
 	
 	public void onAbout(View v) {
@@ -187,7 +184,6 @@ public class GameMenuActivity extends Activity {
 	public void onSettings(View v) {
 		
 		Log.i("Mikhail", "Settings button pressed");
-		
 		Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
 		
@@ -196,24 +192,22 @@ public class GameMenuActivity extends Activity {
 	public void onExit(View v) {
 				finish();
 	}
-
+/*
     void testStoreBoards() {
 
         int[][] blocks = {{1, 2, 3}, {4, 5, 6}, {7, 0, 8}};
         Board b = new Board(blocks);
-        Solution s = new Solution(b);
+        Puzzle s = new Puzzle(b);
 
-        long sId = mHelper.insertSolution(s);
-        Log.i("Mikhail", "solutionId = " + sId);
-
-        long bId = mHelper.insertPuzzle(b, sId);
+        long bId = mHelper.insertPuzzle(b, s);
         Log.i("Mikhail", "boardId = " + bId);
     }
+    */
 
-    Board testLoadBoard() {
+    Puzzle loadPuzzle(int dimention) {
         PuzzleDatabaseHelper.PuzzleCursor pc = mHelper.queryPuzzle();
-        pc.moveToFirst();
-        Board b = pc.getPuzzle();
-        return b;
+        pc.moveToLast();
+        Puzzle p = pc.getPuzzle();
+        return p;
     }
 }

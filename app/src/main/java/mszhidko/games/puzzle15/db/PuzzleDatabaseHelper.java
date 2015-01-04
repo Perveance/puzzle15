@@ -1,15 +1,22 @@
 package mszhidko.games.puzzle15.db;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import mszhidko.games.puzzle15.Board;
-import mszhidko.games.puzzle15.Solution;
+import mszhidko.games.puzzle15.Puzzle;
+import mszhidko.games.puzzle15.Puzzle.Solution;
 
 
 /**
@@ -17,36 +24,105 @@ import mszhidko.games.puzzle15.Solution;
  */
 public class PuzzleDatabaseHelper extends SQLiteOpenHelper {
 
+    private static String DB_PATH = "";
     private static final String DB_NAME = "puzzle.sqlite";
     private static final int DB_VERSION = 1;
 
     private static final String TABLE_PUZZLE  = "puzzle";
     private static final String COLUMN_PUZZLE = "puzzle";
-    private static final String COLUMN_SOLUTION_ID = "solution_id";
+    //private static final String COLUMN_SOLUTION_ID = "solution_id";
 
-    private static final String TABLE_SOLUTION     = "solution";
+    //private static final String TABLE_SOLUTION     = "solution";
     private static final String COLUMN_SOLUTION    = "solution";
     private static final String COLUMN_MOVES       = "moves";
-    private static final String COLUMN_START_BOARD = "start_board";
+    //private static final String COLUMN_START_BOARD = "start_board";
+    private final Context mContext;
+    private SQLiteDatabase mDataBase;
 
     public PuzzleDatabaseHelper(Context c) {
         super(c, DB_NAME, null, DB_VERSION);
+        if(android.os.Build.VERSION.SDK_INT >= 17){
+            DB_PATH = c.getApplicationInfo().dataDir + "/databases/";
+        } else {
+            DB_PATH = "/data/data/" + c.getPackageName() + "/databases/";
+        }
+        this.mContext = c;
+    }
+
+    public void createDataBase() {
+
+        Log.i("Mikhail", " --> onCreate PuzzleDatabaseHelper ENTER");
+
+        if(!isDataBaseExists())
+        {
+            this.getReadableDatabase();
+            this.close();
+            try {
+                //Copy the database from assests
+                copyDataBase();
+                Log.e("Mikhail", "createDatabase database created");
+            }
+            catch (IOException mIOException) {
+                throw new Error("ErrorCopyingDataBase");
+            }
+        }
+
+        /*
+        db.execSQL("drop table if exists puzzle");
+
+        db.execSQL("create table puzzle (" +
+            "_id integer primary key autoincrement, puzzle varchar(100), " +
+            "solution varchar(100), moves integer)");
+        */
+
+        Log.i("Mikhail", " --> onCreate PuzzleDatabaseHelper EXIT");
+
+    }
+
+    private boolean isDataBaseExists()
+    {
+        File dbFile = new File(DB_PATH + DB_NAME);
+        boolean isExist = dbFile.exists();
+        return isExist;
+    }
+
+    // Copy the database from assets
+    private void copyDataBase() throws IOException
+    {
+        InputStream mInput = mContext.getAssets().open(DB_NAME);
+        String outFileName = DB_PATH + DB_NAME;
+        OutputStream mOutput = new FileOutputStream(outFileName);
+        byte[] mBuffer = new byte[1024];
+        int mLength;
+        while ((mLength = mInput.read(mBuffer))>0)
+        {
+            mOutput.write(mBuffer, 0, mLength);
+        }
+        mOutput.flush();
+        mOutput.close();
+        mInput.close();
+    }
+
+    //Open the database, so we can query it
+    public boolean openDataBase() throws SQLException
+    {
+        String mPath = DB_PATH + DB_NAME;
+        //Log.v("mPath", mPath);
+        mDataBase = SQLiteDatabase.openDatabase(mPath, null, SQLiteDatabase.CREATE_IF_NECESSARY);
+        //mDataBase = SQLiteDatabase.openDatabase(mPath, null, SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+        return mDataBase != null;
+    }
+
+    @Override
+    public synchronized void close()
+    {
+        if(mDataBase != null)
+            mDataBase.close();
+        super.close();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
-        db.execSQL("drop table if exists solution");
-        db.execSQL("drop table if exists puzzle");
-
-        db.execSQL("create table solution (" +
-                " _id integer primary key autoincrement, start_board varchar(100)," +
-                " solution varchar(100), moves integer)");
-
-        db.execSQL("create table puzzle (" +
-            "_id integer primary key autoincrement, puzzle varchar(100), " +
-            "solution_id integer references solution(_id))");
-
     }
 
     @Override
@@ -54,16 +130,17 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper {
         // TODO: implement upgrade if needed
     }
 
-    public long insertPuzzle(Board b, long solutionId) {
+    /*
+    public long insertPuzzle(Board b, Puzzle s) {
 
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_PUZZLE, b.toString());
-        cv.put(COLUMN_SOLUTION_ID, solutionId);
+        cv.put(COLUMN_SOLUTION, s.toString());
+        cv.put(COLUMN_MOVES, s.getOptMoves());
         return getWritableDatabase().insert(TABLE_PUZZLE, null, cv);
-    }
+    }*/
 
-    public long insertSolution(Solution s) {
-
+    /*public long insertSolution(Puzzle s) {
 
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_SOLUTION, s.toString());
@@ -71,7 +148,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_START_BOARD, s.getStartBoard().toString());
 
         return getWritableDatabase().insert(TABLE_SOLUTION, null, cv);
-    }
+    }*/
 
     public PuzzleCursor queryPuzzle() {
 
@@ -87,7 +164,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper {
             super(c);
         }
 
-        public Board getPuzzle() {
+        public Puzzle getPuzzle() {
 
             int c = getCount();
             Log.i("Mikhail", "--> Count = " + String.valueOf(c));
@@ -96,7 +173,13 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper {
 
             String boardStr = getString(getColumnIndex(COLUMN_PUZZLE));
             Board b = new Board(boardStr);
-            return b;
+            Solution s = new Solution();
+            int N = getInt(getColumnIndex(COLUMN_MOVES));
+            b.setOptimalSolution(N);
+
+            Puzzle p = new Puzzle(b, s);
+
+            return p;
         }
     }
 
