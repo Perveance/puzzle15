@@ -131,7 +131,6 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper {
         // TODO: implement upgrade if needed
     }
 
-
     public long insertPuzzle(Board b, Puzzle p) {
 
         ContentValues cv = new ContentValues();

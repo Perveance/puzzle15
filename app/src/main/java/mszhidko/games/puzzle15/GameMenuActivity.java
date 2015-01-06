@@ -66,58 +66,8 @@ public class GameMenuActivity extends Activity {
         }
 
         mHelper = new PuzzleDatabaseHelper(getApplicationContext());
-        mHelper.createNewDataBase();
-
-		// Read boards from JSON file and save to sqlite db.
-        // TODO: This shouldn't be done in shipped app. It should be done by helper application once
-        // to create db. App will be shipped with sqlite db.
-		BufferedReader reader = null;
-
-		try {
-			
-			AssetManager am = getResources().getAssets();
-			InputStream in = am.open("puzzles/boards.json", MODE_PRIVATE);
-			
-			reader = new BufferedReader(new InputStreamReader(in));
-			
-			StringBuilder jsonString = new StringBuilder();
-			String line = null;
-
-			while ((line = reader.readLine()) != null) {
-				jsonString.append(line);
-			}
-
-			JSONObject obj = (JSONObject) new JSONTokener(jsonString.toString()).nextValue();
-			JSONArray boardsJSON = (JSONArray) obj.get("boards");
-
-			for (int i = 0; i < boardsJSON.length(); i++) {
-
-				JSONObject b = (JSONObject) boardsJSON.get(i);
-				String boardStr = (String) b.get("tiles");
-				int optimalSolution = b.getInt("solution");
-				Log.i("Mikhail", "\nboard = " + boardStr + "solution = " + optimalSolution);
-
-				Board newBoard = new Board(boardStr);
-				newBoard.setOptimalSolution( (int) optimalSolution);
-                Puzzle.Solution s = new Puzzle.Solution();
-
-                Puzzle p = new Puzzle(newBoard, s);
-                long bId = mHelper.insertPuzzle(newBoard, p);
-                Log.i("Mikhail", "boardId = " + bId);
-
-			}
-
-		} catch (IOException e) {
-			
-			Log.i("Mikhail", "READ: error");
-			
-		} catch (JSONException e) {
-			
-			Log.i("Mikhail", "JSON exception");
-			
-		}
-
-        mHelper.createDataBase();
+        populatePuzzlesDB();  // Read puzzles from JSON file and create SQLite DB
+        mHelper.createDataBase(); // Copy SQLite DB from assets to app's databases folder
 	}
 	
 	public void onAbout(View v) {
@@ -142,8 +92,66 @@ public class GameMenuActivity extends Activity {
 
     Puzzle loadPuzzle(int dimension) {
         PuzzleDatabaseHelper.PuzzleCursor pc = mHelper.queryPuzzle(dimension);
-        pc.moveToLast();
+        int nOfPuzzles = pc.getCount();
+        int position = (int)(Math.random() * nOfPuzzles);
+        Log.i("Mikhail", "position=" + position + "; nOfPuzzles=" + nOfPuzzles);
+        pc.moveToPosition(position);
+        //pc.moveToLast();
         Puzzle p = pc.getPuzzle();
         return p;
+    }
+
+    void populatePuzzlesDB() {
+
+        mHelper.createNewDataBase();
+
+        // Read boards from JSON file and save to sqlite db.
+        // TODO: This shouldn't be done in shipped app. It should be done by helper application once
+        // to create db. App will be shipped with sqlite db.
+        BufferedReader reader = null;
+
+        try {
+
+            AssetManager am = getResources().getAssets();
+            InputStream in = am.open("puzzles/boards.json", MODE_PRIVATE);
+
+            reader = new BufferedReader(new InputStreamReader(in));
+
+            StringBuilder jsonString = new StringBuilder();
+            String line = null;
+
+            while ((line = reader.readLine()) != null) {
+                jsonString.append(line);
+            }
+
+            JSONObject obj = (JSONObject) new JSONTokener(jsonString.toString()).nextValue();
+            JSONArray boardsJSON = (JSONArray) obj.get("boards");
+
+            for (int i = 0; i < boardsJSON.length(); i++) {
+
+                JSONObject b = (JSONObject) boardsJSON.get(i);
+                String boardStr = (String) b.get("tiles");
+                int optimalSolution = b.getInt("moves");
+                Log.i("Mikhail", "\nboard = " + boardStr + "solution = " + optimalSolution);
+
+                Board newBoard = new Board(boardStr);
+                newBoard.setOptimalSolution( (int) optimalSolution);
+                Puzzle.Solution s = new Puzzle.Solution();
+
+                Puzzle p = new Puzzle(newBoard, s);
+                long bId = mHelper.insertPuzzle(newBoard, p);
+                Log.i("Mikhail", "boardId = " + bId);
+
+            }
+
+        } catch (IOException e) {
+
+            Log.i("Mikhail", "READ: error");
+
+        } catch (JSONException e) {
+
+            Log.i("Mikhail", "JSON exception");
+
+        }
     }
 }
