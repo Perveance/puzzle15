@@ -1,5 +1,6 @@
 package mszhidko.games.puzzle15.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorWrapper;
@@ -30,12 +31,10 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TABLE_PUZZLE  = "puzzle";
     private static final String COLUMN_PUZZLE = "puzzle";
-    //private static final String COLUMN_SOLUTION_ID = "solution_id";
-
-    //private static final String TABLE_SOLUTION     = "solution";
     private static final String COLUMN_SOLUTION    = "solution";
     private static final String COLUMN_MOVES       = "moves";
-    //private static final String COLUMN_START_BOARD = "start_board";
+    private static final String COLUMN_DIMENSION   = "dimension";
+
     private final Context mContext;
     private SQLiteDatabase mDataBase;
 
@@ -47,6 +46,17 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper {
             DB_PATH = "/data/data/" + c.getPackageName() + "/databases/";
         }
         this.mContext = c;
+    }
+
+    public void createNewDataBase() {
+
+        openDataBase();
+        mDataBase.execSQL("drop table if exists puzzle");
+
+        mDataBase.execSQL("create table puzzle (" +
+            "_id integer primary key autoincrement, puzzle varchar(100), " +
+            "solution varchar(100), moves integer, dimension integer)");
+
     }
 
     public void createDataBase() {
@@ -66,14 +76,6 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper {
                 throw new Error("ErrorCopyingDataBase");
             }
         }
-
-        /*
-        db.execSQL("drop table if exists puzzle");
-
-        db.execSQL("create table puzzle (" +
-            "_id integer primary key autoincrement, puzzle varchar(100), " +
-            "solution varchar(100), moves integer)");
-        */
 
         Log.i("Mikhail", " --> onCreate PuzzleDatabaseHelper EXIT");
 
@@ -107,7 +109,6 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper {
     public boolean openDataBase() throws SQLException
     {
         String mPath = DB_PATH + DB_NAME;
-        //Log.v("mPath", mPath);
         mDataBase = SQLiteDatabase.openDatabase(mPath, null, SQLiteDatabase.CREATE_IF_NECESSARY);
         //mDataBase = SQLiteDatabase.openDatabase(mPath, null, SQLiteDatabase.NO_LOCALIZED_COLLATORS);
         return mDataBase != null;
@@ -130,30 +131,23 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper {
         // TODO: implement upgrade if needed
     }
 
-    /*
-    public long insertPuzzle(Board b, Puzzle s) {
+
+    public long insertPuzzle(Board b, Puzzle p) {
 
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_PUZZLE, b.toString());
-        cv.put(COLUMN_SOLUTION, s.toString());
-        cv.put(COLUMN_MOVES, s.getOptMoves());
+        cv.put(COLUMN_SOLUTION, p.toString());
+        cv.put(COLUMN_MOVES, p.getOptMoves());
+        cv.put(COLUMN_DIMENSION, b.dimension());
         return getWritableDatabase().insert(TABLE_PUZZLE, null, cv);
-    }*/
+    }
 
-    /*public long insertSolution(Puzzle s) {
+    public PuzzleCursor queryPuzzle(int dim) {
 
-        ContentValues cv = new ContentValues();
-        cv.put(COLUMN_SOLUTION, s.toString());
-        cv.put(COLUMN_MOVES, String.valueOf(s.getOptMoves()));
-        cv.put(COLUMN_START_BOARD, s.getStartBoard().toString());
-
-        return getWritableDatabase().insert(TABLE_SOLUTION, null, cv);
-    }*/
-
-    public PuzzleCursor queryPuzzle() {
-
-        Cursor c = getReadableDatabase().query(TABLE_PUZZLE, null, null, null, null, null, null);
-        // query puzzle by
+        // query puzzle where dimension = dim
+        String where = COLUMN_DIMENSION + " = ?";
+        String[] whereArg = new String[] {String.valueOf(dim)};
+        Cursor c = getReadableDatabase().query(TABLE_PUZZLE, null, where, whereArg, null, null, null);
 
         return new PuzzleCursor(c);
     }

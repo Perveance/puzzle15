@@ -27,11 +27,6 @@ public class GameMenuActivity extends Activity {
 	
 	public static final String  PUZZLE_DIMENTION = "mszhidko.games.puzzle15.puzzle_dimention";
 	public static final String  PUZZLE = "mszhidko.games.puzzle15.puzzle";
-	
-	private ArrayList<Board> board2l = new ArrayList<>();
-	private ArrayList<Board> board3l = new ArrayList<>();
-	private ArrayList<Board> board4l = new ArrayList<>();
-	private ArrayList<Board> board5l = new ArrayList<>();
 
     private PuzzleDatabaseHelper mHelper;
 
@@ -66,7 +61,6 @@ public class GameMenuActivity extends Activity {
 				Intent puzzleIntent = new Intent(GameMenuActivity.this,	BoardActivity.class);
 				
 				puzzleIntent.putExtra(PUZZLE_DIMENTION, 3);
-				//int ind = (int) (Math.random() * board3l.size());
                 Puzzle p = loadPuzzle(3);
 				puzzleIntent.putExtra(PUZZLE, p.getStartBoard());
 				
@@ -110,9 +104,14 @@ public class GameMenuActivity extends Activity {
 			}
 		});
 
-		// Read boards. This should be done in background thread
+        mHelper = new PuzzleDatabaseHelper(getApplicationContext());
+        mHelper.createNewDataBase();
+
+		// Read boards from JSON file and save to sqlite db.
+        // TODO: This shouldn't be done in shipped app. It should be done by helper application once
+        // to create db. App will be shipped with sqlite db.
 		BufferedReader reader = null;
-		
+
 		try {
 			
 			AssetManager am = getResources().getAssets();
@@ -139,23 +138,11 @@ public class GameMenuActivity extends Activity {
 
 				Board newBoard = new Board(boardStr);
 				newBoard.setOptimalSolution( (int) optimalSolution);
+                Puzzle.Solution s = new Puzzle.Solution();
 
-				switch (newBoard.dimension()) {
-				case 2:
-					board2l.add(newBoard);
-					break;
-				case 3:
-					board3l.add(newBoard);
-					break;
-				case 4:
-					board4l.add(newBoard);
-					break;
-				case 5:
-					board5l.add(newBoard);
-					break;
-				default:
-
-				}
+                Puzzle p = new Puzzle(newBoard, s);
+                long bId = mHelper.insertPuzzle(newBoard, p);
+                Log.i("Mikhail", "boardId = " + bId);
 
 			}
 
@@ -169,7 +156,6 @@ public class GameMenuActivity extends Activity {
 			
 		}
 
-        mHelper = new PuzzleDatabaseHelper(getApplicationContext());
         mHelper.createDataBase();
 	}
 	
@@ -192,20 +178,9 @@ public class GameMenuActivity extends Activity {
 	public void onExit(View v) {
 				finish();
 	}
-/*
-    void testStoreBoards() {
 
-        int[][] blocks = {{1, 2, 3}, {4, 5, 6}, {7, 0, 8}};
-        Board b = new Board(blocks);
-        Puzzle s = new Puzzle(b);
-
-        long bId = mHelper.insertPuzzle(b, s);
-        Log.i("Mikhail", "boardId = " + bId);
-    }
-    */
-
-    Puzzle loadPuzzle(int dimention) {
-        PuzzleDatabaseHelper.PuzzleCursor pc = mHelper.queryPuzzle();
+    Puzzle loadPuzzle(int dimension) {
+        PuzzleDatabaseHelper.PuzzleCursor pc = mHelper.queryPuzzle(dimension);
         pc.moveToLast();
         Puzzle p = pc.getPuzzle();
         return p;
