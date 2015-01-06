@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,79 +32,38 @@ public class GameMenuActivity extends Activity {
 
     private PuzzleDatabaseHelper mHelper;
 
+
+
 	public void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game_menu);
-		
-		Button easyB = (Button) findViewById(R.id.easyPuzzleButton);
-		
-		easyB.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent puzzleIntent = new Intent(GameMenuActivity.this,	BoardActivity.class);
-				
-				puzzleIntent.putExtra(PUZZLE_DIMENTION, 2);
-                Puzzle p = loadPuzzle(2);
-				puzzleIntent.putExtra(PUZZLE, p.getStartBoard());
-				
-				startActivity(puzzleIntent);
-				
-			}
-		});
-		
-		Button normalB = (Button) findViewById(R.id.normalPuzzleButton);
-		
-		normalB.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent puzzleIntent = new Intent(GameMenuActivity.this,	BoardActivity.class);
-				
-				puzzleIntent.putExtra(PUZZLE_DIMENTION, 3);
-                Puzzle p = loadPuzzle(3);
-				puzzleIntent.putExtra(PUZZLE, p.getStartBoard());
-				
-				startActivity(puzzleIntent);
-				
-			}
-		});
-		
-		Button difB = (Button) findViewById(R.id.difficultPuzzleButton);
-		
-		difB.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent puzzleIntent = new Intent(GameMenuActivity.this,	BoardActivity.class);
-				
-				puzzleIntent.putExtra(PUZZLE_DIMENTION, 4);
-                Puzzle p = loadPuzzle(4);
-				puzzleIntent.putExtra(PUZZLE, p.getStartBoard());
-				
-				startActivity(puzzleIntent);
-				
-			}
-		});
-		
-		Button veryDifB = (Button) findViewById(R.id.veryDifPuzzleButton);
-		
-		veryDifB.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
 
-				Intent puzzleIntent = new Intent(GameMenuActivity.this,	BoardActivity.class);
-				
-				puzzleIntent.putExtra(PUZZLE_DIMENTION, 5);
-                Puzzle p = loadPuzzle(5);
-				puzzleIntent.putExtra(PUZZLE, p.getStartBoard());
-				
-				startActivity(puzzleIntent);
-				
-			}
-		});
+        final Map difficultyMap = new HashMap<Integer, Integer>();
+
+        difficultyMap.put(R.id.easyPuzzleButton, 2);
+        difficultyMap.put(R.id.normalPuzzleButton, 3);
+        difficultyMap.put(R.id.difficultPuzzleButton, 4);
+        difficultyMap.put(R.id.veryDifPuzzleButton, 5);
+
+        Set<Integer> idSet = difficultyMap.keySet();
+        for (final Integer id : idSet) {
+            Button b = (Button) findViewById(id);
+            b.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    Intent puzzleIntent = new Intent(GameMenuActivity.this,	BoardActivity.class);
+
+                    puzzleIntent.putExtra(PUZZLE_DIMENTION, (int) difficultyMap.get(id));
+                    Puzzle p = loadPuzzle((int) difficultyMap.get(id));
+                    puzzleIntent.putExtra(PUZZLE, p.getStartBoard());
+
+                    startActivity(puzzleIntent);
+
+                }
+            });
+        }
 
         mHelper = new PuzzleDatabaseHelper(getApplicationContext());
         mHelper.createNewDataBase();
