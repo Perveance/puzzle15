@@ -135,7 +135,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_PUZZLE, b.toString());
-        cv.put(COLUMN_SOLUTION, p.toString());
+        cv.put(COLUMN_SOLUTION, p.getSolution().toString());
         cv.put(COLUMN_MOVES, p.getOptMoves());
         cv.put(COLUMN_DIMENSION, b.dimension());
         return getWritableDatabase().insert(TABLE_PUZZLE, null, cv);
@@ -166,7 +166,8 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper {
 
             String boardStr = getString(getColumnIndex(COLUMN_PUZZLE));
             Board b = new Board(boardStr);
-            Solution s = new Solution();
+            String solutionStr = getString(getColumnIndex(COLUMN_SOLUTION));
+            Solution s = new Solution(solutionStr);
             int N = getInt(getColumnIndex(COLUMN_MOVES));
             b.setOptimalSolution(N);
 

@@ -41,9 +41,10 @@ import android.widget.Toast;
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class BoardActivity extends ActionBarActivity {
 
-	static int mDim;
-	static Board mStartBoard;
-	static PuzzleFragment mBoardFrag;
+	private static int mDim;
+	private static Board mStartBoard;
+    private Puzzle.Solution mSolution;
+	private PuzzleFragment mBoardFrag;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,7 @@ public class BoardActivity extends ActionBarActivity {
 
         mDim = getIntent().getIntExtra(GameMenuActivity.PUZZLE_DIMENTION, 3);
 		mStartBoard = (Board) getIntent().getSerializableExtra(GameMenuActivity.PUZZLE);
+        mSolution = (Puzzle.Solution) getIntent().getSerializableExtra(GameMenuActivity.SOLUTION);
 
 		mBoardFrag = new PuzzleFragment();
 		if (savedInstanceState == null) {

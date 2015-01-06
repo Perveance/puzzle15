@@ -29,6 +29,7 @@ public class GameMenuActivity extends Activity {
 	
 	public static final String  PUZZLE_DIMENTION = "mszhidko.games.puzzle15.puzzle_dimention";
 	public static final String  PUZZLE = "mszhidko.games.puzzle15.puzzle";
+    public static final String  SOLUTION = "mszhidko.games.puzzle15.solution";
 
     private PuzzleDatabaseHelper mHelper;
 
@@ -58,6 +59,7 @@ public class GameMenuActivity extends Activity {
                     puzzleIntent.putExtra(PUZZLE_DIMENTION, (int) difficultyMap.get(id));
                     Puzzle p = loadPuzzle((int) difficultyMap.get(id));
                     puzzleIntent.putExtra(PUZZLE, p.getStartBoard());
+                    puzzleIntent.putExtra(SOLUTION, p.getSolution());
 
                     startActivity(puzzleIntent);
 
@@ -131,12 +133,13 @@ public class GameMenuActivity extends Activity {
 
                 JSONObject b = (JSONObject) boardsJSON.get(i);
                 String boardStr = (String) b.get("tiles");
-                int optimalSolution = b.getInt("moves");
-                Log.i("Mikhail", "\nboard = " + boardStr + "solution = " + optimalSolution);
+                int optimalMoves = b.getInt("moves");
+                Log.i("Mikhail", "\nboard = " + boardStr + "solution = " + optimalMoves);
+                String solution = (String) b.get("solution");
 
                 Board newBoard = new Board(boardStr);
-                newBoard.setOptimalSolution( (int) optimalSolution);
-                Puzzle.Solution s = new Puzzle.Solution();
+                newBoard.setOptimalSolution( (int) optimalMoves);
+                Puzzle.Solution s = new Puzzle.Solution(solution);
 
                 Puzzle p = new Puzzle(newBoard, s);
                 long bId = mHelper.insertPuzzle(newBoard, p);

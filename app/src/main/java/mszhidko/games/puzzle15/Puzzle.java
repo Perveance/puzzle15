@@ -1,12 +1,16 @@
 package mszhidko.games.puzzle15;
 
+import android.text.TextUtils;
+
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by mikhail on 12/14/14.
  */
-public class Puzzle {
+public class Puzzle  {
 
     private Board startBoard;
 
@@ -31,17 +35,27 @@ public class Puzzle {
         return solution;
     }
 
-    static public class Solution {
+    static public class Solution implements Serializable {
 
         List<Integer> moves = new ArrayList<Integer>();
 
-        public Solution() {
-            // TODO: solution should be passed to constructor as well
-            moves.add(1); moves.add(2); moves.add(3); // Now just some fake solution
+        public Solution(String strSolution) {
+            List<String> items = Arrays.asList(strSolution.split("\\s*,\\s*"));
+            for (String i : items) {
+                moves.add(Integer.decode(i));
+            }
         }
 
         public String toString() {
-            return moves.toString();
+            if (moves.size() == 0)
+                return "";
+
+            List<String> strMoves = new ArrayList<String>(moves.size());
+            for (Integer move : moves) {
+                strMoves.add(String.valueOf(move));
+            }
+            String res = TextUtils.join(",", strMoves);
+            return res; // TODO: eliminate last line by avoiding res variable
         }
 
     }

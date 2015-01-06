@@ -11,8 +11,6 @@ import mszhidko.games.puzzle15.BoardActivity.PuzzleFragment.Direction;
 
 public class Board implements Serializable {
 
-
-
     private long mId;
     private int N;
 	private int moves;
