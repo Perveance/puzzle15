@@ -382,7 +382,7 @@ public class BoardActivity extends ActionBarActivity {
 				newGame.setLayoutParams(buttonParams);
 				newGame.setText("New Game");
 				newGame.setId(0x52552552); // TODO: make proper ID for the button
-				newGame.setBackgroundResource(R.layout.custom_button);
+				newGame.setBackgroundResource(R.drawable.custom_button);
 				newGame.setOnClickListener(new OnClickListener() {
 					
 					@Override
@@ -409,7 +409,7 @@ public class BoardActivity extends ActionBarActivity {
 				backParams.setMargins(0, 30, 0, 0);
 				back.setLayoutParams(backParams);
 				back.setText("Back");
-				back.setBackgroundResource(R.layout.custom_button);
+				back.setBackgroundResource(R.drawable.custom_button);
 				back.setOnClickListener(new OnClickListener() {
 					
 					@Override
