@@ -3,6 +3,7 @@ package mszhidko.games.puzzle15;
 import java.util.ArrayDeque;
 import java.util.Calendar;
 import java.util.LinkedList;
+import java.util.List;
 
 import mszhidko.games.puzzle15.BoardActivity.PuzzleFragment;
 import mszhidko.games.puzzle15.BoardActivity.PuzzleFragment.Direction;
@@ -37,15 +38,16 @@ public class MultiTouchListener implements OnTouchListener
 	Direction mDirection; 		// Which direction the button can be moved
 	private long mStartTime;	// To distinguish click from move
 	private ArrayDeque<Board> mHistory = new ArrayDeque<Board>();
+    private Puzzle.Solution solution;
 	
 	// Used to detect flings
 	//private GestureDetector mGestureDetector;
 	
-	public MultiTouchListener(PuzzleFragment boardFragment) {
+	public MultiTouchListener(PuzzleFragment boardFragment, Puzzle.Solution s) {
 
 		puzzleFragment = boardFragment;
 	    mPuzzleButtons = (TileButton[][]) puzzleFragment.getButtons();
-	    
+        solution = s;
 	}
 	
 	// Check whether a button was clicked
@@ -601,5 +603,155 @@ public class MultiTouchListener implements OnTouchListener
 		
 		return Direction.NONE;
 	}
+
+    public void hint() {
+
+        if (/*mHistory.size() == 0 &&*/ mCurButton == null) {
+
+            int nMove = puzzleFragment.getBoard().getMoves();
+            int tile = solution.moves.get(nMove);
+
+            doHint(tile);
+
+        } else {
+            Log.i("Mikhail", "Size of mHistory is " + mHistory.size());
+        }
+
+    }
+
+    private void doHint(int tileIndex) {
+
+        final TileButton b = getHintButton(tileIndex);
+        mCurButton = b;
+        Direction d = getHintDirection(tileIndex);
+
+        if (b == null || d.equals(Direction.NONE)) {
+            Log.i("Mikhail", "getHintButton returned NULL");
+            return;
+        } else {
+            Log.i("Mikhail", "getBackDirection returned a Button and Direction");
+        }
+
+        Log.i("Mikhail", "Direction = " + d);
+
+        int left = b.getLeft(); // Current position
+        mLeft = b.getLeft();    // moveButton needs mLeft
+        int top = b.getTop();   // Current position
+        mTop = b.getTop();      // moveButton needs mTop
+        mDirection = d;
+        moveTile(left, top, true); // This method will update mNewLeft & mNewTop
+        mIsSolved = puzzleFragment.getBoard().isGoal();
+        puzzleFragment.updateMoves();
+
+        int dx = mNewLeft - left; // new dx for animation
+        int dy = mNewTop - top;   // new dy for animation
+
+        Log.i("Mikhail", "dx = " + dx + "; dy = " + dy);
+
+        TranslateAnimation animation = new TranslateAnimation(0, dx, 0, dy);
+
+        animation.setAnimationListener(new AnimationListener() { // TODO: This is code duplicate
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+                MarginLayoutParams marginParams = new MarginLayoutParams(b.getWidth(), b.getHeight());
+                marginParams.setMargins(mNewLeft, mNewTop, 0, 0);
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
+
+                b.setLayoutParams(layoutParams);
+                b.setResetButton();
+
+            }
+
+        });
+
+        animation.setDuration(getAnimationDuration(b, calcButtonSpeed(b, dx, dy), dx, dy));
+        animation.setFillAfter(false);
+        animation.setFillEnabled(true);
+        animation.setFillBefore(false);
+        b.startAnimation(animation);
+
+        if (mIsSolved) {
+            Toast.makeText(puzzleFragment.getActivity(),
+                    "Solved!",
+                    Toast.LENGTH_LONG).show();
+
+            MultiTouchListener.this.puzzleFragment.gameOver();
+
+        }
+
+    }
+
+    private TileButton getHintButton(int tile2move) {
+
+        for (int i = 0; i < mPuzzleButtons.length; i++) {
+            for (int j = 0; j < mPuzzleButtons.length; j++) {
+                if (mPuzzleButtons[i][j] != null) {
+
+                    if (tile2move == Integer.valueOf(mPuzzleButtons[i][j].getText().toString())) {
+                        return mPuzzleButtons[i][j];
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private Direction getHintDirection(int tile2move) {
+
+        int[] tag1 = new int[2]; /* Current, initial position */
+        int[] tag2 = new int[2]; /* Previous position, that we need to go back to */
+
+        final Board b = puzzleFragment.getBoard(); // current board
+        for (int i = 0; i < b.dimension(); i++) {
+            for (int j = 0; j < b.dimension(); j++) {
+
+                if (b.get(i, j) == tile2move) { // tile 2 move
+                    tag1[0] = i;
+                    tag1[1] = j;
+
+                }
+
+                if (puzzleFragment.getBoard().get(i, j) == 0) { // destination tile
+
+                    tag2[0] = i;
+                    tag2[1] = j;
+
+                }
+
+            }
+        }
+
+        Log.i("Mikhail", "Prev: " + tag1[0] + "," + tag1[1] + " New: " + tag2[0] + "," + tag2[1]);
+
+        if (tag1[0] < tag2[0]) {
+
+            return Direction.DOWN;
+
+        } else if (tag1[0] > tag2[0]) {
+
+            return Direction.UP;
+
+        } else if (tag1[1] < tag2[1] ) {
+
+            return Direction.RIGHT;
+
+        } else if (tag1[1] > tag2[1]) {
+
+            return Direction.LEFT;
+        }
+
+        return Direction.NONE;
+    }
 
 }

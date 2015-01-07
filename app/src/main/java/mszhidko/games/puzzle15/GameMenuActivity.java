@@ -33,8 +33,6 @@ public class GameMenuActivity extends Activity {
 
     private PuzzleDatabaseHelper mHelper;
 
-
-
 	public void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);

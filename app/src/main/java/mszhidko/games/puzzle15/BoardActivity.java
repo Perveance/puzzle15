@@ -43,9 +43,9 @@ import android.widget.Toast;
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class BoardActivity extends ActionBarActivity {
 
-	private static int mDim;
-	private static Board mStartBoard;
-    private Puzzle.Solution mSolution;
+	private static int mDim; // TODO: get rid of static keyword here
+	private static Board mStartBoard; // TODO: get rid of static keyword
+    private static Puzzle.Solution mSolution; // TODO: Why this should be static?
 	private PuzzleFragment mBoardFrag;
 	
 	@Override
@@ -255,7 +255,7 @@ public class BoardActivity extends ActionBarActivity {
 			View rootView = inflater.inflate(R.layout.fragment_board,
 					container, false);
 
-			mTouchListener = new MultiTouchListener(this);
+			mTouchListener = new MultiTouchListener(this, mSolution);
 			
 		    rootView.setOnTouchListener(mTouchListener);
 			    
@@ -450,6 +450,7 @@ public class BoardActivity extends ActionBarActivity {
                     @Override
                     public void onClick(View v) {
 
+                        mTouchListener.hint();
 
                     }
                 });
