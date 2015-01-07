@@ -15,12 +15,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.IdRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -381,7 +383,15 @@ public class BoardActivity extends ActionBarActivity {
 				buttonParams.setMargins(15, 30, 15, 0);
 				newGame.setLayoutParams(buttonParams);
 				newGame.setText("New Game");
-				newGame.setId(0x52552552); // TODO: make proper ID for the button
+
+                int newGameId;
+                if(android.os.Build.VERSION.SDK_INT >= 17){
+                    newGameId = View.generateViewId();
+                } else {
+                    newGameId = Utils.generateViewId();
+                }
+
+				newGame.setId(newGameId);
 				newGame.setBackgroundResource(R.drawable.custom_button);
 				newGame.setOnClickListener(new OnClickListener() {
 					
@@ -405,7 +415,7 @@ public class BoardActivity extends ActionBarActivity {
 				Button back = new Button(getActivity());
 				RelativeLayout.LayoutParams backParams = new RelativeLayout.LayoutParams(
 						RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-				backParams.addRule(RelativeLayout.LEFT_OF, 0x52552552); // TODO: remove this hardcoding
+				backParams.addRule(RelativeLayout.LEFT_OF, newGameId);
 				backParams.setMargins(0, 30, 0, 0);
 				back.setLayoutParams(backParams);
 				back.setText("Back");
