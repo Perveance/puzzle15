@@ -415,6 +415,13 @@ public class BoardActivity extends ActionBarActivity {
 				Button back = new Button(getActivity());
 				RelativeLayout.LayoutParams backParams = new RelativeLayout.LayoutParams(
 						RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                int backButtonId;
+                if(android.os.Build.VERSION.SDK_INT >= 17){
+                    backButtonId = View.generateViewId();
+                } else {
+                    backButtonId = Utils.generateViewId();
+                }
+                back.setId(backButtonId);
 				backParams.addRule(RelativeLayout.LEFT_OF, newGameId);
 				backParams.setMargins(0, 30, 0, 0);
 				back.setLayoutParams(backParams);
@@ -428,6 +435,25 @@ public class BoardActivity extends ActionBarActivity {
 					}
 				});
 				mLayout.addView(back);
+
+                // Hint button
+                Button hint = new Button(getActivity());
+                RelativeLayout.LayoutParams hintParams = new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                hintParams.addRule(RelativeLayout.LEFT_OF, backButtonId);
+                hintParams.setMargins(0, 30, 15, 0);
+                hint.setLayoutParams(hintParams);
+                hint.setText("H");
+                hint.setBackgroundResource(R.drawable.custom_button);
+                hint.setOnClickListener(new OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+
+
+                    }
+                });
+                mLayout.addView(hint);
 		        
 				isUiInited = true;
 			}
@@ -496,4 +522,3 @@ public class BoardActivity extends ActionBarActivity {
 	}
 
 }
-
