@@ -40,9 +40,6 @@ public class MultiTouchListener implements OnTouchListener
 	private ArrayDeque<Board> mHistory = new ArrayDeque<Board>();
     private Puzzle.Solution solution;
 	
-	// Used to detect flings
-	//private GestureDetector mGestureDetector;
-	
 	public MultiTouchListener(PuzzleFragment boardFragment, Puzzle.Solution s) {
 
 		puzzleFragment = boardFragment;
@@ -383,45 +380,8 @@ public class MultiTouchListener implements OnTouchListener
 		        	
 		        	dx = mNewLeft - left; // new dx for animation 
 		        	dy = mNewTop - top; // new dy for animation
-		        	TranslateAnimation animation = new TranslateAnimation(0, dx, 0, dy);
-		        	
-	        		animation.setAnimationListener(new AnimationListener() {
-						
-						@Override
-						public void onAnimationStart(Animation animation) {
-						}
-						
-						@Override
-						public void onAnimationRepeat(Animation animation) {
-						}
-						
-						@Override
-						public void onAnimationEnd(Animation animation) {
-							
-							MarginLayoutParams marginParams = new MarginLayoutParams(mCurButton.getWidth(), mCurButton.getHeight());
-		                	marginParams.setMargins(mNewLeft, mNewTop, 0, 0);
-		                	RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
-		                
-		                	mCurButton.setLayoutParams(layoutParams);
-		                	mCurButton.setResetButton();
-		                	
-		                	if (mIsSolved) {
-		                		Toast.makeText(puzzleFragment.getActivity(), 
-									           "Solved!", 
-									           Toast.LENGTH_LONG).show();
-		                		
-		                		MultiTouchListener.this.puzzleFragment.gameOver();
-		                		
-		                	}
-						}
-						
-					});
-	        		
-	        		animation.setDuration(getAnimationDuration(mCurButton, calcButtonSpeed(mCurButton, dx, dy), dx, dy));
-	        		animation.setFillAfter(false);
-	        		animation.setFillEnabled(true);
-	        		animation.setFillBefore(false);
-	        		mCurButton.startAnimation(animation);
+
+                    doTileAnimation(mCurButton, dx, dy);
 	        		
 	                mIsMoving = false;
 	        	}
@@ -488,38 +448,8 @@ public class MultiTouchListener implements OnTouchListener
     	int dy = mNewTop - top;   // new dy for animation
     	
     	Log.i("Mikhail", "dx = " + dx + "; dy = " + dy);
-    	
-    	TranslateAnimation animation = new TranslateAnimation(0, dx, 0, dy);
-    	
-		animation.setAnimationListener(new AnimationListener() { // TODO: This is code duplicate
-			
-			@Override
-			public void onAnimationStart(Animation animation) {
-			}
-			
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-			}
-			
-			@Override
-			public void onAnimationEnd(Animation animation) {
-				
-				MarginLayoutParams marginParams = new MarginLayoutParams(b.getWidth(), b.getHeight());
-            	marginParams.setMargins(mNewLeft, mNewTop, 0, 0);
-            	RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
-            
-            	b.setLayoutParams(layoutParams);
-            	b.setResetButton();
-            	
-			}
-			
-		});
-		
-		animation.setDuration(getAnimationDuration(b, calcButtonSpeed(b, dx, dy), dx, dy));
-		animation.setFillAfter(false);
-		animation.setFillEnabled(true);
-		animation.setFillBefore(false);
-		b.startAnimation(animation);
+
+        doTileAnimation(b, dx, dy);
 		
 	}
 	
@@ -648,9 +578,16 @@ public class MultiTouchListener implements OnTouchListener
 
         Log.i("Mikhail", "dx = " + dx + "; dy = " + dy);
 
+        doTileAnimation(b, dx, dy);
+
+    }
+
+    void doTileAnimation(Button button, int dx, int dy) {
+
+        final TileButton b = (TileButton) button;
         TranslateAnimation animation = new TranslateAnimation(0, dx, 0, dy);
 
-        animation.setAnimationListener(new AnimationListener() { // TODO: This is code duplicate
+        animation.setAnimationListener(new AnimationListener() {
 
             @Override
             public void onAnimationStart(Animation animation) {
@@ -670,6 +607,15 @@ public class MultiTouchListener implements OnTouchListener
                 b.setLayoutParams(layoutParams);
                 b.setResetButton();
 
+                if (mIsSolved) {
+                    Toast.makeText(puzzleFragment.getActivity(),
+                            "Solved!",
+                            Toast.LENGTH_LONG).show();
+
+                    MultiTouchListener.this.puzzleFragment.gameOver();
+
+                }
+
             }
 
         });
@@ -679,16 +625,6 @@ public class MultiTouchListener implements OnTouchListener
         animation.setFillEnabled(true);
         animation.setFillBefore(false);
         b.startAnimation(animation);
-
-        if (mIsSolved) {
-            Toast.makeText(puzzleFragment.getActivity(),
-                    "Solved!",
-                    Toast.LENGTH_LONG).show();
-
-            MultiTouchListener.this.puzzleFragment.gameOver();
-
-        }
-
     }
 
     private TileButton getHintButton(int tile2move) {
