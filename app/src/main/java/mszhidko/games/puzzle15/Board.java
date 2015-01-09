@@ -198,10 +198,14 @@ public class Board implements Serializable {
 		blocks[row2][column2] = temp;
     }
     
-    public boolean move(int i, int j) {
+    public boolean move(int i, int j, boolean isBack) {
 		if (i != 0) {
 			if (blocks[i - 1][j] == 0) {
-				moves++;
+                if (!isBack) {
+                    moves++;
+                } else {
+                    moves--;
+                }
 				swap(i, j, i - 1, j);
 				return true;
 			}
@@ -209,7 +213,11 @@ public class Board implements Serializable {
 		
 		if (i != N - 1) {
 			if (blocks[i + 1][j] == 0) {
-				moves++;
+                if (!isBack) {
+                    moves++;
+                } else {
+                    moves--;
+                }
 				swap(i, j, i + 1, j);
 				return true;
 			}
@@ -217,7 +225,11 @@ public class Board implements Serializable {
 		
 		if (j != 0) {
 			if (blocks[i][j - 1] == 0) {
-				moves++;
+                if (!isBack) {
+                    moves++;
+                } else {
+                    moves--;
+                }
 				swap(i, j, i, j - 1);
 				return true;
 			}
@@ -225,7 +237,11 @@ public class Board implements Serializable {
 		
 		if (j != N - 1) {
 			if (blocks[i][j + 1] == 0) {
-				moves++;
+                if (!isBack) {
+                    moves++;
+                } else {
+                    moves--;
+                }
 				swap(i, j, i, j + 1);
 				return true;
 			}

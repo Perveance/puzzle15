@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 import mszhidko.games.puzzle15.BoardActivity.PuzzleFragment;
 import mszhidko.games.puzzle15.BoardActivity.PuzzleFragment.Direction;
@@ -37,7 +38,7 @@ public class MultiTouchListener implements OnTouchListener
 	private TileButton mCurButton; // Only one button can be moved at a time
 	Direction mDirection; 		// Which direction the button can be moved
 	private long mStartTime;	// To distinguish click from move
-	private ArrayDeque<Board> mHistory = new ArrayDeque<Board>();
+    private Stack<Integer> mMovesHistory = new Stack<Integer>();
     private Puzzle.Solution solution;
 	
 	public MultiTouchListener(PuzzleFragment boardFragment, Puzzle.Solution s) {
@@ -155,21 +156,18 @@ public class MultiTouchListener implements OnTouchListener
 		return dY;
 	}
 	
-	private void moveTile(TileButton b, boolean isClick) {
-		
-		mHistory.push(new Board(puzzleFragment.getBoard()));
-    	moveButton(b, isClick, mDirection);
+	private void moveTile(TileButton b, boolean isClick, boolean isBack) {
+
+        if (!isBack) {
+            mMovesHistory.push(new Integer(b.getText().toString()));
+        }
+
+    	moveButton(b, isClick, mDirection, isBack);
     	puzzleFragment.updateMoves(); // Update Moves TextEdit
     	
 	}
 	
-	private void moveButtonBack(TileButton b, Direction dir) {
-		
-		moveButton(b, true, dir);
-		
-	}
-	
-	private void moveButton(TileButton button, boolean isClick, Direction dir) {
+	private void moveButton(TileButton button, boolean isClick, Direction dir, boolean isBack) {
 
         int left = button.getLeft();
         int top = button.getTop();
@@ -179,7 +177,7 @@ public class MultiTouchListener implements OnTouchListener
     		
     		if ((top - mTop) > button.getHeight()/6 || isClick) { // Moving tile
     			
-    			boolean ret = puzzleFragment.getBoard().move(button.getI(), button.getJ());
+    			boolean ret = puzzleFragment.getBoard().move(button.getI(), button.getJ(), isBack);
     			if (ret) {
     				
     				button.setI(button.getI() + 1);
@@ -202,7 +200,7 @@ public class MultiTouchListener implements OnTouchListener
     		
     		if ((mTop - top) > button.getHeight()/6 || isClick) {
 
-    			boolean ret = puzzleFragment.getBoard().move(button.getI(), button.getJ());
+    			boolean ret = puzzleFragment.getBoard().move(button.getI(), button.getJ(), isBack);
     			if (ret) {
     				
     				button.setI(button.getI() - 1);
@@ -224,7 +222,7 @@ public class MultiTouchListener implements OnTouchListener
     		if ((mLeft - left) > button.getWidth()/6 || isClick) {
     			
     			
-    			boolean ret = puzzleFragment.getBoard().move(button.getI(), button.getJ());
+    			boolean ret = puzzleFragment.getBoard().move(button.getI(), button.getJ(), isBack);
     			if (ret) {
     				
     				button.setJ(button.getJ() - 1);
@@ -245,7 +243,7 @@ public class MultiTouchListener implements OnTouchListener
     		
     		if ((left - mLeft) > button.getWidth()/6 || isClick){
     			
-    			boolean ret = puzzleFragment.getBoard().move(button.getI(), button.getJ());
+    			boolean ret = puzzleFragment.getBoard().move(button.getI(), button.getJ(), isBack);
     			if (ret) {
     				
     				button.setJ(button.getJ() + 1);
@@ -378,7 +376,7 @@ public class MultiTouchListener implements OnTouchListener
 		        		}
 		        	}
 		        	
-		        	moveTile(mCurButton, isClick); // This method will update mNewLeft & mNewTop
+		        	moveTile(mCurButton, isClick, false); // This method will update mNewLeft & mNewTop
 		        	mIsSolved = puzzleFragment.getBoard().isGoal();
 		        	
 		        	dx = mNewLeft - left; // new dx for animation 
@@ -412,129 +410,13 @@ public class MultiTouchListener implements OnTouchListener
 	
 	public void back() {
 		
-		if (mHistory.size() != 0 && mCurButton == null) {
-			
-			Board b = mHistory.pop();
-			
-			doBack(b);
-			
-		} else {
-			Log.i("Mikhail", "Size of mHistory is " + mHistory.size());
-		}
-		
-	}
-	
-	private void doBack(Board newBoard) {
-		
-		final TileButton b = getBackButton(newBoard);
-		mCurButton = b;
-		Direction d = getBackDirection(newBoard);
-		
-		if (b == null || d.equals(Direction.NONE)) {
-			Log.i("Mikhail", "getBackDirection returned NULL");
-			return;
-		} else {
-			Log.i("Mikhail", "getBackDirection returned a Button and Direction");
-		}
-		
-		Log.i("Mikhail", "Direction = " + d);
-		
-		int left = b.getLeft(); // Current position
-		mLeft = b.getLeft();    // moveButton needs mLeft
-    	int top = b.getTop();   // Current position
-    	mTop = b.getTop();      // moveButton needs mTop
-		moveButtonBack(b, d);
-		puzzleFragment.setBoard(newBoard);
-		puzzleFragment.updateMoves();
-		
-		int dx = mNewLeft - left; // new dx for animation 
-    	int dy = mNewTop - top;   // new dy for animation
-    	
-    	Log.i("Mikhail", "dx = " + dx + "; dy = " + dy);
+		if (mMovesHistory.size() != 0 && mCurButton == null) {
 
-        doTileAnimation(b, dx, dy);
-		
-	}
-	
-	private TileButton getBackButton(Board newBoard) {
-		
-		int[] tag = new int[2]; 
-		
-		for (int i = 0; i < newBoard.dimension(); i++) {
-			for (int j = 0; j < newBoard.dimension(); j++) {
-				
-				if (newBoard.get(i, j) == 0) {
-					tag[0] = i;
-					tag[1] = j;
-					break; /* TODO: how to break out of doubly-nested loop? */
-				}
-			}
+			Integer tile = mMovesHistory.pop();
+            doTileMove(tile, true);
+			
 		}
 		
-		for (int i = 0; i < mPuzzleButtons.length; i++) {
-			for (int j = 0; j < mPuzzleButtons.length; j++) {
-				if (mPuzzleButtons[i][j] != null) {
-					
-					int[] tag_tmp = new int[2];
-					tag_tmp = (int []) mPuzzleButtons[i][j].getTag();
-					
-					if ((tag_tmp[0] == tag[0]) && (tag_tmp[1] == tag[1])) {
-						return mPuzzleButtons[i][j];
-					}
-					
-				}
-			}
-		}
-		
-		return null;
-		
-	}
-	
-	private Direction getBackDirection(Board newBoard) {
-		
-		int[] tag1 = new int[2]; /* Current, initial position */
-		int[] tag2 = new int[2]; /* Previous position, that we need to go back to */
-		
-		for (int i = 0; i < newBoard.dimension(); i++) {
-			for (int j = 0; j < newBoard.dimension(); j++) {
-				
-				if (newBoard.get(i, j) == 0) { // previous board, the one
-											   // we are going back to
-					tag1[0] = i;
-					tag1[1] = j;
-					
-				}
-				
-				if (puzzleFragment.getBoard().get(i, j) == 0) {
-					
-					tag2[0] = i;
-					tag2[1] = j;
-					
-				}
-				
-			}
-		}
-		
-		Log.i("Mikhail", "Prev: " + tag1[0] + "," + tag1[1] + " New: " + tag2[0] + "," + tag2[1]);
-		
-		if (tag1[0] < tag2[0]) {
-			
-			return Direction.DOWN;
-			
-		} else if (tag1[0] > tag2[0]) {
-			
-			return Direction.UP;
-			
-		} else if (tag1[1] < tag2[1] ) {
-			
-			return Direction.RIGHT;
-			
-		} else if (tag1[1] > tag2[1]) {
-			
-			return Direction.LEFT;
-		}
-		
-		return Direction.NONE;
 	}
 
     public void hint() {
@@ -542,17 +424,14 @@ public class MultiTouchListener implements OnTouchListener
         if (/*mHistory.size() == 0 &&*/ mCurButton == null) {
 
             int nMove = puzzleFragment.getBoard().getMoves();
-            int tile = solution.moves.get(nMove);
+            int tile = solution.moves.get(nMove); // TODO: add getter to get moves
+            doTileMove(tile, false);
 
-            doHint(tile);
-
-        } else {
-            Log.i("Mikhail", "Size of mHistory is " + mHistory.size());
         }
 
     }
 
-    private void doHint(int tileIndex) {
+    private void doTileMove(int tileIndex, boolean isBack) {
 
         final TileButton b = getHintButton(tileIndex);
         mCurButton = b;
@@ -572,7 +451,7 @@ public class MultiTouchListener implements OnTouchListener
         int top = b.getTop();   // Current position
         mTop = b.getTop();      // moveButton needs mTop
         mDirection = d;
-        moveTile(b, true); // This method will update mNewLeft & mNewTop
+        moveTile(b, true, isBack); // This method will update mNewLeft & mNewTop
         mIsSolved = puzzleFragment.getBoard().isGoal();
         puzzleFragment.updateMoves();
 
