@@ -155,22 +155,25 @@ public class MultiTouchListener implements OnTouchListener
 		return dY;
 	}
 	
-	private void moveTile(int left, int top, boolean isClick) {
+	private void moveTile(TileButton b, boolean isClick) {
 		
 		mHistory.push(new Board(puzzleFragment.getBoard()));
-    	moveButton(mCurButton, left, top, isClick, mDirection);
+    	moveButton(b, isClick, mDirection);
     	puzzleFragment.updateMoves(); // Update Moves TextEdit
     	
 	}
 	
 	private void moveButtonBack(TileButton b, Direction dir) {
 		
-		moveButton(b, b.getLeft(), b.getTop(), true, dir);
+		moveButton(b, true, dir);
 		
 	}
 	
-	private void moveButton(TileButton button, int left, int top, boolean isClick, Direction dir) {
-		
+	private void moveButton(TileButton button, boolean isClick, Direction dir) {
+
+        int left = button.getLeft();
+        int top = button.getTop();
+
 		switch (dir) {
     	case DOWN:
     		
@@ -375,7 +378,7 @@ public class MultiTouchListener implements OnTouchListener
 		        		}
 		        	}
 		        	
-		        	moveTile(left, top, isClick); // This method will update mNewLeft & mNewTop
+		        	moveTile(mCurButton, isClick); // This method will update mNewLeft & mNewTop
 		        	mIsSolved = puzzleFragment.getBoard().isGoal();
 		        	
 		        	dx = mNewLeft - left; // new dx for animation 
@@ -569,7 +572,7 @@ public class MultiTouchListener implements OnTouchListener
         int top = b.getTop();   // Current position
         mTop = b.getTop();      // moveButton needs mTop
         mDirection = d;
-        moveTile(left, top, true); // This method will update mNewLeft & mNewTop
+        moveTile(b, true); // This method will update mNewLeft & mNewTop
         mIsSolved = puzzleFragment.getBoard().isGoal();
         puzzleFragment.updateMoves();
 
