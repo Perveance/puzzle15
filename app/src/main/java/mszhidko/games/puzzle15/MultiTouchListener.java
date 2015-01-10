@@ -400,8 +400,8 @@ public class MultiTouchListener implements OnTouchListener
 	private int calcButtonSpeed(TileButton b, int dx, int dy) {
 		
 		int distance = (Math.abs(dx) > Math.abs(dy)) ? Math.abs(dx) : Math.abs(dy);
-		int speed = b.getWidth() / puzzleFragment.getTileSpeed();
-		int duration = distance / speed;
+		float speed = (float) b.getWidth() / puzzleFragment.getTileSpeed();
+		int duration = (int) (distance / speed);
 		
 		return duration;
 	}
