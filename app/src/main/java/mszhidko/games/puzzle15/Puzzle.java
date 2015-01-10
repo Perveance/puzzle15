@@ -58,7 +58,7 @@ public class Puzzle  {
             for (Integer move : moves) {
                 strMoves.add(String.valueOf(move));
             }
-            
+
             return TextUtils.join(",", strMoves);
         }
 

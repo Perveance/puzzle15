@@ -300,17 +300,16 @@ public class Board implements Serializable {
     // does this board equal y?
     public boolean equals(Object y)
     {
-    	Board second;
-    	if (y == null)
-    		return false;
-    	
-    	if (y instanceof String) {
-    		return this.toString().equals(y);
-    	}else if (y instanceof Board) {
-    		second = (Board) y;
-    	} else {
-    		return false;
-    	}
+
+        if (!((y instanceof String) || (y instanceof Board))) {
+            return false;
+        }
+
+        if (y == this) {
+            return true;
+        }
+
+        Board second = (Board) y;
     	
     	if (second.dimension() != this.dimension())
     		return false;
