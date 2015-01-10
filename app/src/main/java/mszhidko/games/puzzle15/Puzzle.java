@@ -46,6 +46,10 @@ public class Puzzle  {
             }
         }
 
+        public List<Integer> getMoves() {
+            return moves;
+        }
+
         public String toString() {
             if (moves.size() == 0)
                 return "";
@@ -54,8 +58,8 @@ public class Puzzle  {
             for (Integer move : moves) {
                 strMoves.add(String.valueOf(move));
             }
-            String res = TextUtils.join(",", strMoves);
-            return res; // TODO: eliminate last line by avoiding res variable
+            
+            return TextUtils.join(",", strMoves);
         }
 
     }

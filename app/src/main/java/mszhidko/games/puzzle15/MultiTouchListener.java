@@ -286,12 +286,10 @@ public class MultiTouchListener implements OnTouchListener
 	public boolean onTouch(View view, MotionEvent event) {
 	    float dX, dY;
 	    
-	    if (mIsSolved) { /* */
+	    if (mIsSolved) {
 			return true;
 		}	    
-	    
-	    //mGestureDetector.onTouchEvent(event);
-	    
+
 	    int action = event.getAction();
 	    switch (action) {
 	        case MotionEvent.ACTION_DOWN: {
@@ -412,7 +410,7 @@ public class MultiTouchListener implements OnTouchListener
 		
 		if (mMovesHistory.size() != 0 && mCurButton == null) {
 
-			Integer tile = mMovesHistory.pop();
+			int tile = mMovesHistory.pop();
             doTileMove(tile, true);
 			
 		}
@@ -424,7 +422,7 @@ public class MultiTouchListener implements OnTouchListener
         if (/*mHistory.size() == 0 &&*/ mCurButton == null) {
 
             int nMove = puzzleFragment.getBoard().getMoves();
-            int tile = solution.moves.get(nMove); // TODO: add getter to get moves
+            int tile = solution.getMoves().get(nMove);
             doTileMove(tile, false);
 
         }
@@ -433,15 +431,13 @@ public class MultiTouchListener implements OnTouchListener
 
     private void doTileMove(int tileIndex, boolean isBack) {
 
-        final TileButton b = getHintButton(tileIndex);
+        final TileButton b = getTileButton(tileIndex);
         mCurButton = b;
-        Direction d = getHintDirection(tileIndex);
+        Direction d = getTileDirection(tileIndex);
 
         if (b == null || d.equals(Direction.NONE)) {
             Log.i("Mikhail", "getHintButton returned NULL");
             return;
-        } else {
-            Log.i("Mikhail", "getBackDirection returned a Button and Direction");
         }
 
         Log.i("Mikhail", "Direction = " + d);
@@ -509,7 +505,7 @@ public class MultiTouchListener implements OnTouchListener
         b.startAnimation(animation);
     }
 
-    private TileButton getHintButton(int tile2move) {
+    private TileButton getTileButton(int tile2move) {
 
         for (int i = 0; i < mPuzzleButtons.length; i++) {
             for (int j = 0; j < mPuzzleButtons.length; j++) {
@@ -525,7 +521,7 @@ public class MultiTouchListener implements OnTouchListener
         return null;
     }
 
-    private Direction getHintDirection(int tile2move) {
+    private Direction getTileDirection(int tile2move) {
 
         int[] tag1 = new int[2]; /* Current, initial position */
         int[] tag2 = new int[2]; /* Previous position, that we need to go back to */

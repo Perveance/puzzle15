@@ -134,7 +134,7 @@ public class BoardActivity extends ActionBarActivity {
 	}
 
 	/**
-	 * A placeholder fragment containing a simple view.
+	 * A placeholder fragment containing main game puzzle board.
 	 */
 	public static class PuzzleFragment extends Fragment {
 
@@ -144,9 +144,7 @@ public class BoardActivity extends ActionBarActivity {
 		TextView mMovesTB;
 		
 		OnSharedPreferenceChangeListener mListener;
-		
-		private final static String fileName = "TestFile.txt";
-		
+
 		public Board getBoard() {
 			return mBoard;
 		}
@@ -194,11 +192,9 @@ public class BoardActivity extends ActionBarActivity {
 
 		public PuzzleFragment() {
 
-			//int[][] tiles = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 0}}; 
 			N = mDim;
 			
 			mBoard = mStartBoard;
-			//mBoard = new Board(tiles);
 			
 			mButtons = new TileButton[N][N];
 			
@@ -283,7 +279,6 @@ public class BoardActivity extends ActionBarActivity {
 		
 		public void onActivityCreated(Bundle savedInstanceState) {
 			super.onActivityCreated(savedInstanceState);
-			
 		}
 		
 		protected void initializeUI() {
@@ -332,8 +327,7 @@ public class BoardActivity extends ActionBarActivity {
 				
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 				boolean ret = prefs.getBoolean("moves_count_checkbox", true);
-				
-						
+
 				mListener =	new OnSharedPreferenceChangeListener() {
 					
 					@Override
