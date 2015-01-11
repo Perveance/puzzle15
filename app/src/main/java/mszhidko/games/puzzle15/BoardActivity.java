@@ -4,25 +4,15 @@ import mszhidko.games.movingtile.R;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.annotation.IdRes;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
-import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -33,12 +23,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.webkit.WebSettings.TextSize;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class BoardActivity extends ActionBarActivity {
@@ -68,7 +55,7 @@ public class BoardActivity extends ActionBarActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.board, menu);
+		getMenuInflater().inflate(R.menu.game_context_menu, menu);
 		return true;
 		
 	}
@@ -92,7 +79,39 @@ public class BoardActivity extends ActionBarActivity {
 			exitPuzzle();
 			
 			return true;
-		}
+		} else if (id == R.id.action_new_game) {
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+            // Set title
+            alertDialogBuilder.setTitle("Start new game");
+
+            // Set dialog message
+            alertDialogBuilder
+                    .setMessage("Are you sure? You current game status will be lost...")
+                    .setCancelable(false)
+                    .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog,int id) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog,int id) {
+                            // Cancelled by user, do nothing here
+                        }
+                    });
+
+            // Create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // Show it
+            alertDialog.show();
+
+            return true;
+        }
+
 		return super.onOptionsItemSelected(item);
 	}
 	
@@ -101,7 +120,7 @@ public class BoardActivity extends ActionBarActivity {
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 		 
 		// Set title
-		alertDialogBuilder.setTitle("Puzzle15");
+		alertDialogBuilder.setTitle("Exit the game");
 
 		// Set dialog message
 		alertDialogBuilder
@@ -369,42 +388,6 @@ public class BoardActivity extends ActionBarActivity {
 					mMovesTB.setVisibility(View.INVISIBLE);
 				}
 				
-				// New game button
-				Button newGame = new Button(getActivity());
-				RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
-						RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-				buttonParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-				buttonParams.setMargins(15, 30, 15, 0);
-				newGame.setLayoutParams(buttonParams);
-				newGame.setText("New Game");
-
-                int newGameId;
-                if(android.os.Build.VERSION.SDK_INT >= 17){
-                    newGameId = View.generateViewId();
-                } else {
-                    newGameId = Utils.generateViewId();
-                }
-
-				newGame.setId(newGameId);
-				newGame.setBackgroundResource(R.drawable.custom_button);
-				newGame.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						
-						/*FragmentManager manager = getActivity().getSupportFragmentManager();
-						FragmentTransaction trans = manager.beginTransaction();
-						trans.remove(PuzzleFragment.this);
-						trans.commit();
-						
-						mBoardFrag = new PuzzleFragment();
-						manager.beginTransaction().add(R.id.container, mBoardFrag).commit();
-						manager.popBackStack();*/
-						getActivity().finish(); // Just finish BoardActivity and return back to Game menu
-					}
-				});
-				mLayout.addView(newGame);
-				
 				// Back button
 				Button back = new Button(getActivity());
 				RelativeLayout.LayoutParams backParams = new RelativeLayout.LayoutParams(
@@ -416,8 +399,8 @@ public class BoardActivity extends ActionBarActivity {
                     backButtonId = Utils.generateViewId();
                 }
                 back.setId(backButtonId);
-				backParams.addRule(RelativeLayout.LEFT_OF, newGameId);
-				backParams.setMargins(0, 30, 0, 0);
+				backParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+				backParams.setMargins(15, 30, 15, 0);
 				back.setLayoutParams(backParams);
 				back.setText("Back");
 				back.setBackgroundResource(R.drawable.custom_button);
@@ -437,7 +420,7 @@ public class BoardActivity extends ActionBarActivity {
                 hintParams.addRule(RelativeLayout.LEFT_OF, backButtonId);
                 hintParams.setMargins(0, 30, 15, 0);
                 hint.setLayoutParams(hintParams);
-                hint.setText("H");
+                hint.setText("Hint");
                 hint.setBackgroundResource(R.drawable.custom_button);
                 hint.setOnClickListener(new OnClickListener() {
 
