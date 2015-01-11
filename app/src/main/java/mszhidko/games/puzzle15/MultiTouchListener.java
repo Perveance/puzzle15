@@ -429,6 +429,16 @@ public class MultiTouchListener implements OnTouchListener
             if (tile > 0)
                 doTileMove(tile, false);
 
+        } else {
+
+            //
+            // TODO: in this case new Solver should be created and new solution found
+            //
+            Toast.makeText(puzzleFragment.getActivity(),
+                    "Your current state is not optimal. Try pressing 'Back' button first, " +
+                    "and then pressing hint to show the most optimal solution.",
+                    Toast.LENGTH_LONG).show();
+
         }
 
     }
