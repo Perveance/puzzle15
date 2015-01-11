@@ -45,7 +45,7 @@ public class BoardActivity extends ActionBarActivity {
 
 	private static int mDim; // TODO: get rid of static keyword here
 	private static Board mStartBoard; // TODO: get rid of static keyword
-    private static Puzzle.Solution mSolution; // TODO: Why this should be static?
+    private static Solution mSolution; // TODO: Why this should be static?
 	private PuzzleFragment mBoardFrag;
 	
 	@Override
@@ -55,7 +55,7 @@ public class BoardActivity extends ActionBarActivity {
 
         mDim = getIntent().getIntExtra(GameMenuActivity.PUZZLE_DIMENTION, 3);
 		mStartBoard = (Board) getIntent().getSerializableExtra(GameMenuActivity.PUZZLE);
-        mSolution = (Puzzle.Solution) getIntent().getSerializableExtra(GameMenuActivity.SOLUTION);
+        mSolution = (Solution) getIntent().getSerializableExtra(GameMenuActivity.SOLUTION);
 
 		mBoardFrag = new PuzzleFragment();
 		if (savedInstanceState == null) {

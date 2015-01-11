@@ -38,10 +38,10 @@ public class MultiTouchListener implements OnTouchListener
 	private TileButton mCurButton; // Only one button can be moved at a time
 	Direction mDirection; 		// Which direction the button can be moved
 	private long mStartTime;	// To distinguish click from move
-    private Stack<Integer> mMovesHistory = new Stack<Integer>();
-    private Puzzle.Solution solution;
+    private Solution mMovesHistory = new Solution();
+    private Solution solution;
 	
-	public MultiTouchListener(PuzzleFragment boardFragment, Puzzle.Solution s) {
+	public MultiTouchListener(PuzzleFragment boardFragment, Solution s) {
 
 		puzzleFragment = boardFragment;
 	    mPuzzleButtons = (TileButton[][]) puzzleFragment.getButtons();
@@ -159,7 +159,7 @@ public class MultiTouchListener implements OnTouchListener
 	private void moveTile(TileButton b, boolean isClick, boolean isBack) {
 
         if (!isBack) {
-            mMovesHistory.push(new Integer(b.getText().toString()));
+            mMovesHistory.pushMove(Integer.valueOf(b.getText().toString()));
         }
 
     	moveButton(b, isClick, mDirection, isBack);
@@ -408,9 +408,9 @@ public class MultiTouchListener implements OnTouchListener
 	
 	public void back() {
 		
-		if (mMovesHistory.size() != 0 && mCurButton == null) {
+		if (mMovesHistory.getNumberOfMoves() != 0 && mCurButton == null) {
 
-			int tile = mMovesHistory.pop();
+			int tile = mMovesHistory.popMove();
             doTileMove(tile, true);
 			
 		}
@@ -419,11 +419,15 @@ public class MultiTouchListener implements OnTouchListener
 
     public void hint() {
 
-        if (/*mHistory.size() == 0 &&*/ mCurButton == null) {
+        if (mCurButton != null)
+            return;
 
-            int nMove = puzzleFragment.getBoard().getMoves();
-            int tile = solution.getMoves().get(nMove);
-            doTileMove(tile, false);
+        int nMove = puzzleFragment.getBoard().getMoves();
+        if (nMove == 0 || mMovesHistory.equals(solution.subSolution(nMove))) {
+
+            int tile = solution.getMove(nMove);
+            if (tile > 0)
+                doTileMove(tile, false);
 
         }
 

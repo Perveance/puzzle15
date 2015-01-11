@@ -137,7 +137,7 @@ public class GameMenuActivity extends Activity {
 
                 Board newBoard = new Board(boardStr);
                 newBoard.setOptimalSolution( (int) optimalMoves);
-                Puzzle.Solution s = new Puzzle.Solution(solution);
+                Solution s = new Solution(solution);
 
                 Puzzle p = new Puzzle(newBoard, s);
                 long bId = mHelper.insertPuzzle(newBoard, p);

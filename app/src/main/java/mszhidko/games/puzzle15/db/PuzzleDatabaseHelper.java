@@ -17,7 +17,7 @@ import java.io.OutputStream;
 
 import mszhidko.games.puzzle15.Board;
 import mszhidko.games.puzzle15.Puzzle;
-import mszhidko.games.puzzle15.Puzzle.Solution;
+import mszhidko.games.puzzle15.Solution;
 
 
 /**
