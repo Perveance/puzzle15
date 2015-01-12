@@ -66,7 +66,7 @@ public class GameMenuActivity extends Activity {
         }
 
         mHelper = new PuzzleDatabaseHelper(getApplicationContext());
-        populatePuzzlesDB();  // Read puzzles from JSON file and create SQLite DB
+        //populatePuzzlesDB();  // Read puzzles from JSON file and create SQLite DB
         mHelper.createDataBase(); // Copy SQLite DB from assets to app's databases folder
 	}
 	
@@ -96,7 +96,6 @@ public class GameMenuActivity extends Activity {
         int position = (int)(Math.random() * nOfPuzzles);
         Log.i("Mikhail", "position=" + position + "; nOfPuzzles=" + nOfPuzzles);
         pc.moveToPosition(position);
-        //pc.moveToLast();
         Puzzle p = pc.getPuzzle();
         return p;
     }
