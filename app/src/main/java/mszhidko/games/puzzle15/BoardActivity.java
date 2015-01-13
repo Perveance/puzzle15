@@ -30,6 +30,12 @@ import android.widget.TextView;
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class BoardActivity extends ActionBarActivity {
 
+    private static final int COLOR_MOVES_TEXT = 0xFF000000;
+    private static final int COLOR_GAME_BACKGROUND = 0xFFEBEBEB;
+    private static final int COLOR_GAME_TILE = 0xFFADC7B0;
+    private static final int COLOR_TILE_TEXT = 0xFF000000;
+
+
 	private static int mDim; // TODO: get rid of static keyword here
 	private static Board mStartBoard; // TODO: get rid of static keyword
     private static Solution mSolution; // TODO: Why this should be static?
@@ -317,7 +323,7 @@ public class BoardActivity extends ActionBarActivity {
 				int textSize =  160 / N;
 				mBoardLeft = v.getLeft();
 				mBoardTop = v.getTop() + infoPanelHeight/* + 100*/; // Offset the buttons
-				mLayout.setBackgroundColor(0xFFC7D6FF);
+				mLayout.setBackgroundColor(COLOR_GAME_BACKGROUND);
 				
 				for (int i = 0; i < N; i++) {
 					for (int j = 0; j < N; j++) {
@@ -330,9 +336,9 @@ public class BoardActivity extends ActionBarActivity {
 						int[] tag = {i, j}; // Button's tag is the row, column in Board's class
 						mButtons[i][j].setTag(tag);
 						mButtons[i][j].setText(String.valueOf(mBoard.get(i, j)));
-						mButtons[i][j].setTextColor(0xFFFFFFFF);
+						mButtons[i][j].setTextColor(COLOR_TILE_TEXT);
 						mButtons[i][j].setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
-						mButtons[i][j].setBackgroundColor(0xFF338C00);
+						mButtons[i][j].setBackgroundColor(COLOR_GAME_TILE);
 						
 						MarginLayoutParams marginParams = new MarginLayoutParams(buttonWidth - 4, buttonHeight - 4);
 		                marginParams.setMargins(mBoardLeft + j * buttonWidth, mBoardTop + i * buttonHeight, 0, 0);
@@ -380,8 +386,8 @@ public class BoardActivity extends ActionBarActivity {
 				params.setMargins(15, 30, 0, 0);
 				mMovesTB.setLayoutParams(params);
 				mMovesTB.setText("Moves: 0/" + mBoard.getOptimalSolutionMoves());
-				mMovesTB.setTextColor(0xFF000000);
-				mMovesTB.setBackgroundColor(0xFFFFFFFF);
+				mMovesTB.setTextColor(COLOR_MOVES_TEXT);
+				mMovesTB.setBackgroundColor(COLOR_GAME_BACKGROUND);
 				mMovesTB.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 				mLayout.addView(mMovesTB);
 				if (!ret) {
